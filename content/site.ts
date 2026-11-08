@@ -446,7 +446,8 @@ export const work = {
       // Put a screenshot at /public/work/scrunch-and-create.jpg and set the path below.
       image: "", // e.g. "/work/scrunch-and-create.jpg"
       imageAlt: "Screenshot of the Scrunch & Create e-commerce website",
-      url: "[PROJECT URL]",
+      // Live production showcase link for visitors to view the real store
+      url: "https://scrunchcreate.com/",
       linkLabel: "View project",
     },
   ],
