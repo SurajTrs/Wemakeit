@@ -12,10 +12,10 @@
 export const WHATSAPP_NUMBER = "917300969491"; // main number — all WhatsApp buttons open this one
 // Extra WhatsApp numbers, listed in the footer alongside the main one.
 export const WHATSAPP_NUMBERS_EXTRA: string[] = ["919555219911"];
-export const EMAIL = "[EMAIL]";
+export const EMAIL = "wemakeit.in@gmail.com";
 export const INSTAGRAM_HANDLE = "wemakeit._"; // without the "@"
-export const BOOKING_URL = "[BOOKING LINK]"; // e.g. a Calendly / Google Calendar link
-export const SITE_URL = "https://wemakeit.in"; // [CONFIRM DOMAIN] — used for SEO / Open Graph
+export const BOOKING_URL = ""; // empty = "Book a free call" buttons open WhatsApp. Add a Calendly link here later if you want one
+export const SITE_URL = "https://wemakeit.in"; // CONFIRM this is the live domain — used for SEO / Open Graph
 
 // ── Legal details (used on the Privacy, Terms and Refund pages) ──
 // Fill these before going live. If you're a sole proprietor, the legal name is
@@ -24,7 +24,7 @@ export const legalEntity = {
   name: "WeMakeIt",
   address: "Sector 24, Gurgaon, Haryana, India",
   city: "Gurugram, Haryana", // courts of this city have jurisdiction over disputes
-  grievanceOfficer: "[GRIEVANCE OFFICER NAME]", // the person who handles privacy complaints (can be you)
+  grievanceOfficer: "Suraj Rawat", // the person who handles privacy complaints (can be you)
   updated: "8 November 2026", // change this whenever you edit a policy
 };
 
@@ -75,11 +75,10 @@ export const instagramLink = `https://www.instagram.com/${INSTAGRAM_HANDLE}`;
 // Paste full profile links. Any left as [PLACEHOLDER] are hidden on the live site.
 // icon keys must match components/Icon.tsx
 export const socials = [
-  { name: "Instagram", icon: "instagram", url: hasInstagram ? instagramLink : "[INSTAGRAM URL]" },
-  { name: "Facebook", icon: "facebook", url: "[FACEBOOK PAGE URL]" }, // e.g. https://facebook.com/wemakeit
-  { name: "LinkedIn", icon: "linkedin", url: "[LINKEDIN PAGE URL]" }, // e.g. https://linkedin.com/company/wemakeit
-  { name: "X", icon: "x", url: "[X PROFILE URL]" }, // e.g. https://x.com/wemakeit
-  { name: "YouTube", icon: "youtube", url: "[YOUTUBE CHANNEL URL]" }, // e.g. https://youtube.com/@wemakeit
+  { name: "Instagram", icon: "instagram", url: hasInstagram ? instagramLink : "" },
+  { name: "Facebook", icon: "facebook", url: "" }, // add your page link, e.g. https://www.facebook.com/wemakeit (empty = hidden)
+  { name: "LinkedIn", icon: "linkedin", url: "" }, // e.g. https://linkedin.com/company/wemakeit (empty = hidden)
+  { name: "YouTube", icon: "youtube", url: "https://www.youtube.com/@wemakeit-in" },
 ];
 export const liveSocials = socials.filter((s) => !isPlaceholder(s.url) && /^https?:\/\//.test(s.url));
 
@@ -693,7 +692,7 @@ export const faq = {
     },
     {
       q: "Can I pay in parts?",
-      a: "Yes. Most projects are split into milestones: [PAYMENT TERMS, e.g. 50% to start, 50% before launch]. Larger projects can be broken into more stages.",
+      a: "Yes. Most projects are split into milestones: 50% to start and 50% before launch. Larger projects can be broken into more stages.",
     },
     {
       q: "Do you work with businesses outside my city?",

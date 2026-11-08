@@ -182,7 +182,7 @@ export const terms: LegalDoc = {
       heading: "3. Prices and payment",
       body: [
         "Prices on this website are starting prices and may change. The price in your accepted quote is fixed for the agreed scope.",
-        "Projects are paid in milestones as stated in your quote. Unless your quote says otherwise, the default is [PAYMENT TERMS, e.g. 50% to start, 50% before launch].",
+        "Projects are paid in milestones as stated in your quote. Unless your quote says otherwise, the default is 50% to start and 50% before launch.",
         [
           "Invoices are due within 7 days unless your quote says otherwise.",
           "Prices are in Indian Rupees (₹). GST is added where applicable.",
