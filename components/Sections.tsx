@@ -23,6 +23,7 @@ import {
   problem,
   process,
   services,
+  servicePages,
   socials,
   ways,
   whatsappLink,
@@ -440,10 +441,12 @@ export function Services() {
         <SectionHeading id="services-title">{services.heading}</SectionHeading>
         <ul className="mt-8 grid grid-cols-2 gap-3 sm:mt-12 lg:grid-cols-5">
           {services.items.map((s, i) => {
-            const href = whatsappLink(services.ctaMessage(s.title));
+            // Cards with a service page link there (good for SEO); the rest open WhatsApp.
+            const page = "slug" in s && s.slug ? `/services/${s.slug}` : null;
+            const href = page ?? whatsappLink(services.ctaMessage(s.title));
             return (
               <li key={s.title} data-reveal style={d(i % 5, 70, Math.floor(i / 5) * 100)}>
-                <a
+                <Link
                   href={href}
                   {...linkProps(href)}
                   className={`${card} group flex h-full flex-col p-4 transition-all duration-300 hover:-translate-y-1 hover:border-accent/40 hover:shadow-[0_20px_50px_-28px_rgba(198,244,50,0.5)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent sm:p-6`}
@@ -454,11 +457,11 @@ export function Services() {
                   <h3 className="mt-3 text-[15px] font-semibold leading-tight text-fg sm:mt-5 sm:text-lg">{s.title}</h3>
                   <p className="mt-2 hidden text-sm leading-relaxed text-muted sm:block">{s.line}</p>
                   <span className="mt-auto inline-flex items-center gap-1.5 pt-3 text-[13px] font-semibold text-accent sm:pt-5 sm:text-sm">
-                    {hasWhatsApp && <WhatsAppIcon className="h-4 w-4" />}
-                    {services.cta}
+                    {!page && hasWhatsApp && <WhatsAppIcon className="h-4 w-4" />}
+                    {page ? services.cta : "Enquire"}
                     <Icon name="arrow" className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                   </span>
-                </a>
+                </Link>
               </li>
             );
           })}
@@ -651,17 +654,17 @@ export function Why() {
 }
 
 /* ───────────────────────── FAQ ───────────────────────── */
-export function Faq() {
+export function Faq({ items = faq.items, heading = faq.heading, className = "" }: { items?: { q: string; a: string }[]; heading?: string; className?: string }) {
   return (
-    <section id="faq" aria-labelledby="faq-title" className="scroll-mt-20 py-16 sm:py-20 lg:py-28">
+    <section id="faq" aria-labelledby="faq-title" className={`scroll-mt-20 py-16 sm:py-20 lg:py-28 ${className}`}>
       <Container className="grid gap-12 lg:grid-cols-[1fr_1.6fr]">
         <div>
           <Label>{faq.label}</Label>
-          <SectionHeading id="faq-title">{faq.heading}</SectionHeading>
+          <SectionHeading id="faq-title">{heading}</SectionHeading>
         </div>
         {/* Native <details> = accessible accordion with zero JavaScript */}
         <div className="divide-y divide-line border-y border-line">
-          {faq.items.map((item, i) => (
+          {items.map((item, i) => (
             <details key={item.q} data-reveal style={d(i, 70)} className="group">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-6 text-lg font-medium text-fg sm:text-xl [&::-webkit-details-marker]:hidden">
                 {item.q}
@@ -764,7 +767,7 @@ function SocialLinks() {
 export function Footer() {
   return (
     <footer className="border-t border-line pb-28 pt-16 sm:pb-16">
-      <Container className="grid gap-12 md:grid-cols-[1.5fr_1fr_1fr]">
+      <Container className="grid gap-12 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.1fr]">
         <div>
           <a href="/" className="font-display text-3xl tracking-tight text-fg">
             {brand.name}
@@ -779,6 +782,16 @@ export function Footer() {
             {[...nav.links, { label: "Contact", href: "/#contact" }].map((l) => (
               <li key={l.href}>
                 <a href={l.href} className="text-[15px] text-muted transition-colors hover:text-accent">{l.label}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <nav aria-label="Services">
+          <h2 className="text-xs font-medium uppercase tracking-[0.16em] text-fg">Services</h2>
+          <ul className="mt-4 space-y-3">
+            {servicePages.map((p) => (
+              <li key={p.slug}>
+                <Link href={`/services/${p.slug}`} className="text-[15px] text-muted transition-colors hover:text-accent">{p.title}</Link>
               </li>
             ))}
           </ul>

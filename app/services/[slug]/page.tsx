@@ -3,29 +3,30 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Icon, WhatsAppIcon } from "@/components/Icon";
 import { Navbar } from "@/components/Navbar";
-import { FloatingWhatsApp, Footer, StatsStrip } from "@/components/Sections";
+import { Faq, FloatingWhatsApp, Footer, StatsStrip } from "@/components/Sections";
 import { btn, Container, Label } from "@/components/ui";
-import { hasWhatsApp, linkProps, offer, process, SITE_URL, whatsappLink } from "@/content/site";
+import { brand, hasWhatsApp, linkProps, process, servicePages, SITE_URL, whatsappLink } from "@/content/site";
 
 type Props = { params: Promise<{ slug: string }> };
 
-const find = (slug: string) => offer.items.find((o) => o.slug === slug);
+const find = (slug: string) => servicePages.find((o) => o.slug === slug);
 
-// Build one static page per service in content/site.ts → offer.items
+// Build one static page per service in content/site.ts → offer.items + moreServices
 export function generateStaticParams() {
-  return offer.items.map((o) => ({ slug: o.slug }));
+  return servicePages.map((o) => ({ slug: o.slug }));
 }
 export const dynamicParams = false; // unknown slugs → 404
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const item = find((await params).slug);
   if (!item) return {};
-  const title = `${item.title} | WeMakeIt`;
+  // " | WeMakeIt" is appended by the title template in app/layout.tsx
   return {
-    title,
-    description: item.line,
+    title: item.seoTitle,
+    description: item.seoDescription,
     alternates: { canonical: `/services/${item.slug}` },
-    openGraph: { title, description: item.line, url: `/services/${item.slug}` },
+    openGraph: { type: "website", title: `${item.seoTitle} | WeMakeIt`, description: item.seoDescription, url: `/services/${item.slug}`, images: ["/opengraph-image"] },
+    twitter: { card: "summary_large_image", title: `${item.seoTitle} | WeMakeIt`, description: item.seoDescription, images: ["/opengraph-image"] },
   };
 }
 
@@ -35,16 +36,40 @@ export default async function ServicePage({ params }: Props) {
 
   const message = `Hi WeMakeIt, I'm interested in ${item.title}. Can you share details and pricing?`;
   const href = whatsappLink(message);
-  const others = offer.items.filter((o) => o.slug !== item.slug);
+  const others = servicePages.filter((o) => o.slug !== item.slug);
 
+  const url = `${SITE_URL}/services/${item.slug}`;
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "Service",
-    name: item.title,
-    description: item.line,
-    url: `${SITE_URL}/services/${item.slug}`,
-    provider: { "@type": "ProfessionalService", name: "WeMakeIt", url: SITE_URL },
-    areaServed: "IN",
+    "@graph": [
+      {
+        "@type": "Service",
+        "@id": `${url}#service`,
+        name: item.title,
+        serviceType: item.title,
+        description: item.intro,
+        url,
+        provider: { "@type": "ProfessionalService", "@id": `${SITE_URL}/#business`, name: brand.name, url: SITE_URL },
+        areaServed: [{ "@type": "City", name: "Gurugram" }, { "@type": "Country", name: "India" }],
+        hasOfferCatalog: {
+          "@type": "OfferCatalog",
+          name: `${item.title}: what's included`,
+          itemListElement: item.includes.map((name) => ({ "@type": "Offer", itemOffered: { "@type": "Service", name } })),
+        },
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+          { "@type": "ListItem", position: 2, name: "Services", item: `${SITE_URL}/#offer` },
+          { "@type": "ListItem", position: 3, name: item.title, item: url },
+        ],
+      },
+      {
+        "@type": "FAQPage",
+        mainEntity: item.faqs.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+      },
+    ],
   };
 
   return (
@@ -58,10 +83,15 @@ export default async function ServicePage({ params }: Props) {
             className="anim-breathe pointer-events-none absolute bottom-[-30%] left-1/2 h-[480px] w-[900px] max-w-[180vw] -translate-x-1/2 bg-[radial-gradient(ellipse_at_center,rgba(198,244,50,0.28),rgba(198,244,50,0.06)_40%,transparent_70%)] blur-2xl"
           />
           <Container className="relative">
-            <Link href="/#offer" className="anim-rise inline-flex items-center gap-2 text-sm font-medium text-muted transition-colors hover:text-accent">
-              <Icon name="arrowLeft" className="h-4 w-4" />
-              All services
-            </Link>
+            <nav aria-label="Breadcrumb" className="anim-rise">
+              <ol className="flex flex-wrap items-center gap-2 text-sm font-medium text-muted">
+                <li><Link href="/" className="transition-colors hover:text-accent">Home</Link></li>
+                <li aria-hidden="true">/</li>
+                <li><Link href="/#offer" className="transition-colors hover:text-accent">Services</Link></li>
+                <li aria-hidden="true">/</li>
+                <li aria-current="page" className="text-fg">{item.title}</li>
+              </ol>
+            </nav>
             <div className="mt-8 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
               <div className="max-w-3xl">
                 <span style={{ "--d": "100ms" } as React.CSSProperties} className="anim-pop flex h-16 w-16 items-center justify-center rounded-2xl bg-lime text-ink shadow-[0_0_40px_-8px_rgba(198,244,50,0.7)]">
@@ -146,6 +176,9 @@ export default async function ServicePage({ params }: Props) {
             </ol>
           </Container>
         </section>
+
+        {/* Service FAQs (also sent to Google as FAQPage data) */}
+        <Faq items={item.faqs} heading={`${item.title}: common *questions*.`} className="border-t border-line" />
 
         {/* Other services */}
         <section className="py-16 lg:py-24">

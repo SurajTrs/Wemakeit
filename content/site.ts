@@ -84,10 +84,23 @@ export const socials = [
 export const liveSocials = socials.filter((s) => !isPlaceholder(s.url) && /^https?:\/\//.test(s.url));
 
 // ── SEO ─────────────────────────────────────────────────────
+// Titles: keep under ~60 characters and descriptions under ~160, or Google cuts them off.
+// Page titles get " | WeMakeIt" added automatically (see app/layout.tsx).
 export const seo = {
-  title: "WeMakeIt | Websites, Apps & Marketing for Indian Businesses",
+  title: "Web Design & Digital Marketing Agency in Gurgaon | WeMakeIt",
   description:
-    "One team to build, launch and grow your business online. Websites live in 7 days. Web apps, mobile apps, SEO, ads and social media under one roof.",
+    "Website design, apps, SEO, ads and social media from one team in Gurgaon. Websites live in 7 days from ₹4,999 at fixed prices. Serving businesses across India.",
+  // Google Search Console → Add property → "HTML tag" method → paste only the content="..." value here.
+  googleVerification: "",
+  keywords: [
+    "website development company in Gurgaon",
+    "web design agency Gurgaon",
+    "digital marketing agency Gurgaon",
+    "ecommerce website development",
+    "mobile app development company",
+    "SEO services Gurgaon",
+    "small business website India",
+  ],
   ogTitle: "WeMakeIt | From idea to income",
   ogDescription:
     "Website, app, SEO, ads and marketing under one roof. No more chasing five freelancers.",
@@ -118,7 +131,7 @@ export const nav = {
 
 // ── Hero ────────────────────────────────────────────────────
 export const hero = {
-  eyebrow: "Full-service digital agency · India",
+  eyebrow: "Web design & digital marketing agency · Gurgaon",
   headline: "From idea to income.", // add "\n" for a line break
   highlight: "income", // the words in the headline that get the lime highlight
   subtext: "Your entire business online. Built, launched and grown by one team.",
@@ -259,6 +272,14 @@ export const offer = {
         "Feedback rounds so the final design feels right to you",
       ],
       goodFor: ["New businesses that need a professional first impression", "Existing sites that look outdated or don't bring enquiries"],
+      seoTitle: "Website Design Company in Gurgaon",
+      seoDescription:
+        "Custom, mobile-first website design for small businesses in Gurgaon and across India. Designs built to turn visitors into enquiries. Websites from ₹4,999.",
+      faqs: [
+        { q: "How much does website design cost?", a: "Our Starter Website is ₹4,999 one-time and the Business Growth package is ₹7,999, both with a mobile-friendly design. Bigger websites and online stores get a fixed quote before we start, so there are no surprises." },
+        { q: "Will I see the design before you build it?", a: "Yes. You get a design preview to approve before we start building, plus feedback rounds so the final design feels right to you." },
+        { q: "Can you redesign my existing website?", a: "Yes. We start with an audit of speed, design, SEO and conversions, then share what to change and what it will cost. You decide what we work on." },
+      ],
     },
     {
       slug: "development",
@@ -275,6 +296,14 @@ export const offer = {
         "Help connecting your domain and hosting",
       ],
       goodFor: ["Business websites and landing pages", "Custom features a template can't do"],
+      seoTitle: "Website Development Company in Gurgaon",
+      seoDescription:
+        "Website development for businesses in Gurgaon and across India: fast, secure, mobile-first sites that load in under 2 seconds. Live in 7 days at fixed prices.",
+      faqs: [
+        { q: "How long does it take to build a website?", a: "A small business website goes live in 7 days once we have your content (text, logo and photos). Larger websites get a clear timeline in your quote." },
+        { q: "Do I own my website and domain?", a: "Yes. Once the project is paid in full, the website, domain and all logins are in your name. You're never locked in with us." },
+        { q: "Can you help with my domain and hosting?", a: "Yes. We help you choose and connect your domain and hosting, and set up secure HTTPS so your site shows the padlock in browsers." },
+      ],
     },
     {
       slug: "e-commerce",
@@ -291,6 +320,14 @@ export const offer = {
         "Shipping and delivery settings for your products",
       ],
       goodFor: ["Shops and brands moving online", "Instagram sellers who want their own store"],
+      seoTitle: "E-commerce Website Development in Gurgaon",
+      seoDescription:
+        "Online store development with Razorpay payments (UPI, cards, net banking), product catalogue, cart and order management. For shops and sellers across India.",
+      faqs: [
+        { q: "Which payment methods can my online store accept?", a: "We set up Razorpay, so customers can pay by UPI, debit and credit cards, net banking and wallets." },
+        { q: "Can I add and edit products myself?", a: "Yes. You can manage products, categories, photos, prices and stock yourself, and track orders as they come in." },
+        { q: "How long does an e-commerce website take?", a: "It depends on how many products and features you need. You get a clear timeline and a fixed price in your quote before we start." },
+      ],
     },
     {
       slug: "seo",
@@ -307,6 +344,14 @@ export const offer = {
         "Local SEO and Google Business profile (in the Business Growth plan)",
       ],
       goodFor: ["Local businesses that want customers nearby", "Any site that isn't showing up on Google yet"],
+      seoTitle: "SEO Services in Gurgaon for Small Businesses",
+      seoDescription:
+        "SEO services for businesses in Gurgaon and across India: on-page SEO, Google Search Console, sitemaps, structured data and Google Business Profile setup.",
+      faqs: [
+        { q: "How long does SEO take to show results?", a: "SEO builds up over time. Most sites start seeing movement within a few weeks to a few months, depending on how competitive your keywords and area are. We set up the foundations from day one." },
+        { q: "What is local SEO?", a: "Local SEO helps you show up when people nearby search for what you sell, for example \"bakery near me\". It covers your Google Business Profile, location pages and consistent business details across the web." },
+        { q: "Is SEO included with my website?", a: "Every Starter Website includes basic SEO setup. The Business Growth package adds Google Business Profile setup and SEO to rank locally." },
+      ],
     },
     {
       slug: "mobile-first",
@@ -323,6 +368,13 @@ export const offer = {
         "Fast loading even on slower mobile data",
       ],
       goodFor: ["Every business, since most visitors come from mobile", "Sites that look broken or tiny on phones"],
+      seoTitle: "Mobile-Friendly Responsive Website Design",
+      seoDescription:
+        "Responsive, mobile-first websites tested on phones, tablets, laptops and widescreens. Fast even on slow mobile data. For businesses across India.",
+      faqs: [
+        { q: "Why does a mobile-friendly website matter for Google?", a: "Google mainly looks at the mobile version of your site when deciding where to rank it. A slow or broken mobile site can hold back your rankings as well as your sales." },
+        { q: "Will my website work on slow mobile data?", a: "Yes. We optimise images and code so pages load quickly even on slower connections." },
+      ],
     },
     {
       slug: "free-support",
@@ -339,28 +391,177 @@ export const offer = {
         "Optional monthly maintenance plans after the free period",
       ],
       goodFor: ["Business owners who don't want to deal with tech", "Anyone launching their first website"],
+      seoTitle: "Website Maintenance & Support in Gurgaon",
+      seoDescription:
+        "Up to 3 months of free post-launch support: bug fixes, content updates and help. Then optional monthly website maintenance plans for businesses across India.",
+      faqs: [
+        { q: "What happens after the free support period?", a: "You can carry on with an optional monthly maintenance plan, or manage the site yourself. There's no obligation." },
+        { q: "What does website maintenance cover?", a: "Updates, backups, security checks, small changes and bug fixes. Growth retainers can add ongoing SEO and ads." },
+      ],
     },
   ],
 };
+
+// ── More service pages (own page at /services/<slug>, not shown in "What we offer") ──
+// These target what people search on Google. Linked from the Services grid and the footer.
+// [REVIEW] New copy: check each page matches what you actually deliver before going live.
+export const moreServices = [
+    {
+      slug: "mobile-app-development",
+      icon: "phone",
+      title: "Mobile App Development",
+      line: "Android and iOS apps, designed, built and published to the Play Store and App Store.",
+      intro: "Turn your idea or business into an app your customers keep on their phone. We design, build and publish Android and iOS apps, then help you improve them after launch.",
+      includes: [
+        "Android and iOS apps from one team",
+        "App screens designed and approved by you before we build",
+        "Logins, payments, notifications and other features your app needs",
+        "Publishing to the Google Play Store and Apple App Store",
+        "Support and updates after launch",
+      ],
+      goodFor: ["Startups launching a new app idea", "Businesses that want customers to order or book from their phone"],
+      seoTitle: "Mobile App Development Company in Gurgaon",
+      seoDescription:
+        "Android and iOS app development in Gurgaon for startups and businesses across India. Design, build and Play Store / App Store publishing, at a fixed quote.",
+      faqs: [
+        { q: "How much does it cost to build a mobile app?", a: "It depends on the screens and features you need. After a free call we send a fixed quote with a clear scope and timeline, so the price we agree is the price you pay." },
+        { q: "Do you build for both Android and iOS?", a: "Yes. We build apps for both Android and iOS and publish them to the Google Play Store and Apple App Store." },
+        { q: "Will I own the app's code?", a: "Yes. Once the project is paid in full, the code and store accounts are yours." },
+      ],
+    },
+    {
+      slug: "web-app-development",
+      icon: "layout",
+      title: "Web App Development",
+      line: "Custom dashboards, portals and MVPs built to grow with your business.",
+      intro: "When a template or off-the-shelf tool doesn't fit how you work, we build a web app that does: from a quick MVP to test an idea to a full customer portal or internal dashboard.",
+      includes: [
+        "MVPs to test a startup idea quickly",
+        "Customer portals, booking systems and dashboards",
+        "Integrations with payments, WhatsApp, email and other APIs",
+        "Secure logins and user roles",
+        "Room to add features as you grow",
+      ],
+      goodFor: ["Startups that need an MVP fast", "Businesses running on spreadsheets and manual work"],
+      seoTitle: "Web App & MVP Development in Gurgaon",
+      seoDescription:
+        "Custom web app development in Gurgaon: MVPs, dashboards, portals and booking systems built by full-stack developers. Fixed quotes for startups and businesses.",
+      faqs: [
+        { q: "What is an MVP?", a: "An MVP (minimum viable product) is the simplest version of your product that real users can try. It lets you test your idea and get feedback before spending on every feature." },
+        { q: "Can you connect my web app to other tools?", a: "Yes. We can integrate payments, WhatsApp, email, CRMs and most tools that offer an API." },
+      ],
+    },
+    {
+      slug: "ai-chatbots-automation",
+      icon: "bot",
+      title: "AI Chatbots & Automation",
+      line: "Answer customers 24/7 and cut repetitive manual work with AI.",
+      intro: "Let AI handle the repetitive work. We add chatbots that answer common customer questions any time of day, and automations that move data between your tools so your team doesn't have to.",
+      includes: [
+        "AI chatbots for your website or WhatsApp",
+        "Answers trained on your own products, prices and FAQs",
+        "Automations for leads, orders, reminders and follow-ups",
+        "Smart search for your website or app",
+        "Hand-off to a real person when the bot can't help",
+      ],
+      goodFor: ["Businesses answering the same questions every day", "Teams losing hours to copy-paste and manual follow-ups"],
+      seoTitle: "AI Chatbot & Automation Services in India",
+      seoDescription:
+        "AI chatbots for websites and WhatsApp plus business automation for leads, orders and follow-ups. Built by an in-house AI team in Gurgaon for businesses in India.",
+      faqs: [
+        { q: "Can an AI chatbot answer questions about my business?", a: "Yes. We set it up with your own products, prices and FAQs so it answers like your team would, and passes the chat to a person when needed." },
+        { q: "Can I add AI to my existing website?", a: "Yes. We can add a chatbot, smart search or automations to most existing websites and web apps." },
+      ],
+    },
+    {
+      slug: "google-meta-ads",
+      icon: "megaphone",
+      title: "Google & Meta Ads",
+      line: "Ad campaigns on Google, Facebook and Instagram that bring leads, tracked down to the rupee.",
+      intro: "Get in front of people who are ready to buy. We plan, run and improve ad campaigns on Google, Facebook and Instagram, and track every lead so you know what your money is doing.",
+      includes: [
+        "Google Search and Maps ads for people searching for what you sell",
+        "Facebook and Instagram ads to reach the right audience",
+        "Ad copy and creatives made for your brand",
+        "Conversion tracking for calls, WhatsApp chats and forms",
+        "Clear reports on spend, leads and cost per lead",
+      ],
+      goodFor: ["Businesses that want enquiries quickly", "Anyone who has tried ads before without seeing results"],
+      seoTitle: "Google Ads & Meta Ads Agency in Gurgaon",
+      seoDescription:
+        "Google Ads, Facebook and Instagram ads management in Gurgaon. Campaigns, creatives and conversion tracking that show your cost per lead. For businesses across India.",
+      faqs: [
+        { q: "How much should I spend on ads?", a: "It depends on your business and area. We suggest a starting budget on our free call, then adjust based on what brings leads at the best cost." },
+        { q: "Is the ad budget included in your fee?", a: "No. Your ad budget is paid directly to Google or Meta, so you always see exactly what was spent." },
+      ],
+    },
+    {
+      slug: "social-media-marketing",
+      icon: "heart",
+      title: "Social Media Marketing",
+      line: "Consistent posts and reels that keep your brand visible on Instagram and Facebook.",
+      intro: "Stay visible without spending your evenings making posts. We plan, design and publish content for Instagram and Facebook that fits your brand and keeps customers coming back.",
+      includes: [
+        "Monthly content plan for Instagram and Facebook",
+        "Post and reel designs in your brand style",
+        "Captions and hashtags written for you",
+        "Scheduled posting so your page stays active",
+        "Monthly summary of what worked",
+      ],
+      goodFor: ["Businesses whose page hasn't been updated in months", "Brands that want to look established online"],
+      seoTitle: "Social Media Marketing Agency in Gurgaon",
+      seoDescription:
+        "Social media marketing in Gurgaon: Instagram and Facebook content plans, post and reel designs, captions and scheduling. Included for 1 month in Business Growth.",
+      faqs: [
+        { q: "Which platforms do you manage?", a: "We focus on Instagram and Facebook, where most local customers in India spend their time." },
+        { q: "Is social media included in any package?", a: "Yes. The Business Growth package includes 1 month of social media. After that you can continue monthly." },
+      ],
+    },
+    {
+      slug: "branding-logo-design",
+      icon: "pen",
+      title: "Branding & Logo Design",
+      line: "A logo, colours and brand voice that make your business look established.",
+      intro: "People judge a business in seconds. We design a logo, colours and a simple brand style that make you look professional everywhere: on your website, social media, shop and packaging.",
+      includes: [
+        "Logo design with a few directions to choose from",
+        "Brand colours and fonts",
+        "Brand voice: how your business sounds in words",
+        "Files ready for web, social media and print",
+        "Social media profile and cover images",
+      ],
+      goodFor: ["New businesses that need an identity", "Businesses with a logo that looks dated or homemade"],
+      seoTitle: "Logo Design & Branding Agency in Gurgaon",
+      seoDescription:
+        "Logo design and branding in Gurgaon: logo, colours, fonts and brand voice, with files ready for web, social media and print. For new and growing Indian businesses.",
+      faqs: [
+        { q: "Will I get the logo files?", a: "Yes. You get your logo in all the formats you need for web, social media and print, and you own them." },
+        { q: "Can you refresh my existing logo?", a: "Yes. We can modernise your current logo while keeping what customers already recognise." },
+      ],
+    },
+];
+
+/** Every service page, used by the /services/<slug> route, sitemap and footer. */
+export const servicePages = [...offer.items, ...moreServices];
 
 // ── Services grid ───────────────────────────────────────────
 // icon keys must match components/Icon.tsx
 export const services = {
   label: "Services",
   heading: "Everything we do, *under one roof*.",
-  cta: "Enquire", // small link text on each card; clicking a card opens WhatsApp
+  cta: "Learn more", // small link text on each card; clicking a card opens its service page
   ctaMessage: (service: string) => `Hi WeMakeIt, I'm interested in ${service}. Can you share details and pricing?`,
   items: [
-    { icon: "globe", title: "Website Development", line: "Fast, mobile-friendly websites that turn visitors into enquiries." },
-    { icon: "cart", title: "E-commerce Stores", line: "Online stores with payments, shipping and easy product management." },
-    { icon: "layout", title: "Web Apps", line: "Custom dashboards, portals and MVPs built to grow with you." },
-    { icon: "phone", title: "Mobile Apps", line: "Android and iOS apps, built and published to the stores." },
-    { icon: "bot", title: "AI Chatbots & Automation", line: "Answer customers 24/7 and cut repetitive manual work." },
-    { icon: "search", title: "SEO", line: "Show up on Google when people search for what you sell." },
-    { icon: "megaphone", title: "Meta & Google Ads", line: "Ad campaigns that bring leads, tracked down to the rupee." },
-    { icon: "heart", title: "Social Media Marketing", line: "Consistent posts and reels that keep your brand visible." },
-    { icon: "pen", title: "Branding & Logo", line: "A logo, colours and voice that make you look established." },
-    { icon: "wrench", title: "Maintenance & Support", line: "Updates, backups and fixes so your site never lets you down." },
+    { icon: "globe", slug: "development", title: "Website Development", line: "Fast, mobile-friendly websites that turn visitors into enquiries." },
+    { icon: "cart", slug: "e-commerce", title: "E-commerce Stores", line: "Online stores with payments, shipping and easy product management." },
+    { icon: "layout", slug: "web-app-development", title: "Web Apps", line: "Custom dashboards, portals and MVPs built to grow with you." },
+    { icon: "phone", slug: "mobile-app-development", title: "Mobile Apps", line: "Android and iOS apps, built and published to the stores." },
+    { icon: "bot", slug: "ai-chatbots-automation", title: "AI Chatbots & Automation", line: "Answer customers 24/7 and cut repetitive manual work." },
+    { icon: "search", slug: "seo", title: "SEO", line: "Show up on Google when people search for what you sell." },
+    { icon: "megaphone", slug: "google-meta-ads", title: "Meta & Google Ads", line: "Ad campaigns that bring leads, tracked down to the rupee." },
+    { icon: "heart", slug: "social-media-marketing", title: "Social Media Marketing", line: "Consistent posts and reels that keep your brand visible." },
+    { icon: "pen", slug: "branding-logo-design", title: "Branding & Logo", line: "A logo, colours and voice that make you look established." },
+    { icon: "wrench", slug: "free-support", title: "Maintenance & Support", line: "Updates, backups and fixes so your site never lets you down." },
   ],
 };
 

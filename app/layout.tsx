@@ -9,8 +9,16 @@ const body = Inter({ subsets: ["latin"], variable: "--font-body", display: "swap
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: seo.title,
+  title: { default: seo.title, template: "%s | WeMakeIt" },
   description: seo.description,
+  keywords: seo.keywords,
+  applicationName: "WeMakeIt",
+  authors: [{ name: "WeMakeIt", url: SITE_URL }],
+  creator: "WeMakeIt",
+  publisher: "WeMakeIt",
+  category: "Web design and digital marketing",
+  formatDetection: { telephone: false },
+  ...(seo.googleVerification && { verification: { google: seo.googleVerification } }),
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
@@ -21,7 +29,11 @@ export const metadata: Metadata = {
     description: seo.ogDescription,
   },
   twitter: { card: "summary_large_image", title: seo.ogTitle, description: seo.ogDescription },
-  robots: { index: true, follow: true },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 },
+  },
 };
 
 export const viewport: Viewport = {

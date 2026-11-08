@@ -9,7 +9,7 @@ import { Container, Label } from "./ui";
 
 export function legalMetadata(doc: LegalDoc): Metadata {
   return {
-    title: `${doc.title} | WeMakeIt`,
+    title: doc.title, // " | WeMakeIt" added by the layout title template
     description: doc.description,
     alternates: { canonical: `/${doc.slug}` },
   };
