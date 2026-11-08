@@ -15,6 +15,7 @@ const jsonLd = {
     ...(hasWhatsApp && { telephone: [WHATSAPP_NUMBER, ...WHATSAPP_NUMBERS_EXTRA].map((n) => `+${n}`) }),
     ...(liveSocials.length > 0 && { sameAs: liveSocials.map((s) => s.url) }),
     areaServed: "IN",
+    address: { "@type": "PostalAddress", streetAddress: "Sector 24", addressLocality: "Gurugram", addressRegion: "Haryana", addressCountry: "IN" },
     priceRange: "₹₹",
   },
   {

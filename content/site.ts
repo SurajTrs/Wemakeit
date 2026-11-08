@@ -22,8 +22,8 @@ export const SITE_URL = "https://wemakeit.in"; // [CONFIRM DOMAIN] — used for 
 // usually your own name, e.g. "Suraj Rawat (trading as WeMakeIt)".
 export const legalEntity = {
   name: "WeMakeIt",
-  address: "[REGISTERED ADDRESS]",
-  city: "[CITY]", // courts of this city have jurisdiction over disputes
+  address: "Sector 24, Gurgaon, Haryana, India",
+  city: "Gurugram, Haryana", // courts of this city have jurisdiction over disputes
   grievanceOfficer: "[GRIEVANCE OFFICER NAME]", // the person who handles privacy complaints (can be you)
   updated: "8 November 2026", // change this whenever you edit a policy
 };
@@ -504,7 +504,7 @@ export const faq = {
 export const contact = {
   label: "Contact",
   heading: "Tell us about your *project*.",
-  sub: "Fill this in and it opens WhatsApp (or email) with your details ready to send. We usually reply within [RESPONSE TIME, e.g. a few hours].",
+  sub: "Fill this in and it opens WhatsApp (or email) with your details ready to send. We usually reply within 2 hours, Monday to Saturday.",
   fields: {
     name: "Your name",
     phone: "Phone number",
