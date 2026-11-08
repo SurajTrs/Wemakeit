@@ -15,7 +15,9 @@ export const WHATSAPP_NUMBERS_EXTRA: string[] = ["919555219911"];
 export const EMAIL = "wemakeit.in@gmail.com";
 export const INSTAGRAM_HANDLE = "wemakeit._"; // without the "@"
 export const BOOKING_URL = ""; // empty = "Book a free call" buttons open WhatsApp. Add a Calendly link here later if you want one
-export const SITE_URL = "https://wemakeit.in"; // CONFIRM this is the live domain — used for SEO / Open Graph
+// Canonical domain (www). Must match the domain Vercel serves without redirecting, or Google sees
+// canonicals and sitemap URLs that redirect. Used for canonicals, sitemap, robots.txt, Open Graph and schema.
+export const SITE_URL = "https://www.wemakeit.in";
 
 // ── Legal details (used on the Privacy, Terms and Refund pages) ──
 // Fill these before going live. If you're a sole proprietor, the legal name is
