@@ -1,6 +1,6 @@
 import { Navbar } from "@/components/Navbar";
 import { FloatingWhatsApp, Footer, HomeSections } from "@/components/Sections";
-import { brand, EMAIL, faq, hasEmail, hasWhatsApp, legalEntity, liveSocials, pricing, seo, servicePages, SITE_URL, WHATSAPP_NUMBER, WHATSAPP_NUMBERS_EXTRA } from "@/content/site";
+import { brand, currentPrice, EMAIL, faq, hasEmail, hasWhatsApp, legalEntity, liveSocials, pricing, seo, servicePages, SITE_URL, WHATSAPP_NUMBER, WHATSAPP_NUMBERS_EXTRA } from "@/content/site";
 
 // Structured data helps Google understand the business + shows FAQ info.
 const jsonLd = {
@@ -40,7 +40,7 @@ const jsonLd = {
             "@type": "Offer",
             name: p.name,
             description: p.description,
-            price: p.price.replace(/[^\d]/g, ""),
+            price: currentPrice({ regular: p.price, offer: p.offerPrice }).replace(/[^\d]/g, ""),
             priceCurrency: "INR",
           })),
         ...servicePages.map((p) => ({

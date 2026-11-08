@@ -19,6 +19,29 @@ export const BOOKING_URL = ""; // empty = "Book a free call" buttons open WhatsA
 // canonicals and sitemap URLs that redirect. Used for canonicals, sitemap, robots.txt, Open Graph and schema.
 export const SITE_URL = "https://www.wemakeit.in";
 
+// ── Festive offer (Diwali) ──────────────────────────────────
+// While enabled, the site shows the regular price crossed out and the offer price.
+// Set enabled: false when the offer ends: every price on the site goes back to the regular price.
+export const festiveOffer = {
+  enabled: true,
+  name: "Diwali offer",
+  badge: "Diwali offer",
+  banner: "Diwali offer: ₹1,000 off every website package",
+  bannerShort: "Diwali offer: ₹1,000 off websites", // shown on phones
+  bannerCta: "See prices",
+};
+
+// Package prices: change them here only (pricing cards, FAQs, WhatsApp messages and SEO all read these).
+export const packagePrices = {
+  starter: { regular: "₹5,999", offer: "₹4,999" },
+  growth: { regular: "₹8,999", offer: "₹7,999" },
+};
+/** The price customers pay right now: the offer price while the festive offer is on. */
+export const currentPrice = (p: { regular: string; offer?: string }) =>
+  festiveOffer.enabled && p.offer ? p.offer : p.regular;
+const STARTER = currentPrice(packagePrices.starter);
+const GROWTH = currentPrice(packagePrices.growth);
+
 // ── Legal details (used on the Privacy, Terms and Refund pages) ──
 // Fill these before going live. If you're a sole proprietor, the legal name is
 // usually your own name, e.g. "Suraj Rawat (trading as WeMakeIt)".
@@ -90,7 +113,7 @@ export const liveSocials = socials.filter((s) => !isPlaceholder(s.url) && /^http
 export const seo = {
   title: "Web Design & Digital Marketing Agency in Gurgaon | WeMakeIt",
   description:
-    "Website design, apps, SEO, ads and social media from one team in Gurgaon. Websites live in 7 days from ₹4,999 at fixed prices. Serving businesses across India.",
+    `Website design, apps, SEO, ads and social media from one team in Gurgaon. Websites live in 7 days from ${STARTER} at fixed prices. Serving businesses across India.`,
   // Google Search Console → Add property → "HTML tag" method → paste only the content="..." value here.
   googleVerification: "",
   keywords: [
@@ -275,9 +298,9 @@ export const offer = {
       goodFor: ["New businesses that need a professional first impression", "Existing sites that look outdated or don't bring enquiries"],
       seoTitle: "Website Design Company in Gurgaon",
       seoDescription:
-        "Custom, mobile-first website design for small businesses in Gurgaon and across India. Designs built to turn visitors into enquiries. Websites from ₹4,999.",
+        `Custom, mobile-first website design for small businesses in Gurgaon and across India. Designs built to turn visitors into enquiries. Websites from ${STARTER}.`,
       faqs: [
-        { q: "How much does website design cost?", a: "Our Starter Website is ₹4,999 one-time and the Business Growth package is ₹7,999, both with a mobile-friendly design. Bigger websites and online stores get a fixed quote before we start, so there are no surprises." },
+        { q: "How much does website design cost?", a: `Our Starter Website is ${STARTER} one-time and the Business Growth package is ${GROWTH}${festiveOffer.enabled ? ` (${festiveOffer.name} prices)` : ""}, both with a mobile-friendly design. Bigger websites and online stores get a fixed quote before we start, so there are no surprises.` },
         { q: "Will I see the design before you build it?", a: "Yes. You get a design preview to approve before we start building, plus feedback rounds so the final design feels right to you." },
         { q: "Can you redesign my existing website?", a: "Yes. We start with an audit of speed, design, SEO and conversions, then share what to change and what it will cost. You decide what we work on." },
       ],
@@ -585,7 +608,8 @@ export const pricing = {
   plans: [
     {
       name: "Starter Website",
-      price: "₹4,999",
+      price: packagePrices.starter.regular,
+      offerPrice: packagePrices.starter.offer as string | undefined, // shown while festiveOffer.enabled
       priceNote: "one-time",
       description: "Everything a small business needs to get online fast.",
       features: [
@@ -595,12 +619,13 @@ export const pricing = {
         "Live in 7 days",
       ],
       cta: "Get started",
-      ctaMessage: "Hi WeMakeIt, I'm interested in the Starter Website (₹4,999)",
+      ctaMessage: `Hi WeMakeIt, I'm interested in the Starter Website (${festiveOffer.enabled ? `${festiveOffer.name} ` : ""}${STARTER})`,
       popular: false,
     },
     {
       name: "Business Growth",
-      price: "₹7,999",
+      price: packagePrices.growth.regular,
+      offerPrice: packagePrices.growth.offer as string | undefined,
       priceNote: "one-time",
       description: "Get online and start getting found by customers.",
       features: [
@@ -610,12 +635,13 @@ export const pricing = {
         "1 month of social media",
       ],
       cta: "Choose Growth",
-      ctaMessage: "Hi WeMakeIt, I'm interested in the Business Growth package (₹7,999)",
+      ctaMessage: `Hi WeMakeIt, I'm interested in the Business Growth package (${festiveOffer.enabled ? `${festiveOffer.name} ` : ""}${GROWTH})`,
       popular: true,
     },
     {
       name: "Custom / App / Enterprise",
       price: "Let's talk",
+      offerPrice: undefined as string | undefined,
       priceNote: "",
       description: "For products and businesses that need more than a website.",
       features: [
@@ -630,9 +656,9 @@ export const pricing = {
     },
   ],
   popularBadge: "Most popular",
-  note: "Need just one task done?",
-  noteCta: "Ask for a freelance quote",
-  noteCtaMessage: "Hi WeMakeIt, I need a freelance quote for a task",
+  note: "Need just one small job done?",
+  noteCta: "Get a quick quote",
+  noteCtaMessage: "Hi WeMakeIt, I need a quote for one small job",
 };
 
 // ── Our work ────────────────────────────────────────────────
@@ -641,19 +667,29 @@ export const work = {
   heading: "Recent *projects*.",
   projects: [
     {
-      title: "Scrunch & Create",
+      title: "Dhampur Green",
       type: "E-commerce website",
       description:
-        "An online store for Scrunch & Create with product catalogue, cart and checkout, designed to work smoothly on mobile.",
-      // Put a screenshot at /public/work/scrunch-and-create.jpg and set the path below.
-      image: "", // e.g. "/work/scrunch-and-create.jpg"
-      imageAlt: "Screenshot of the Scrunch & Create e-commerce website",
-      // Live production showcase link for visitors to view the real store
-      url: "https://scrunchcreate.com/",
+        "A Shopify online store for Dhampur Green's organic jaggery, natural syrups, healthy snacks and sweeteners, built for easy shopping on mobile.",
+      image: "/work/dhampur-green-logo.png",
+      imageFit: "contain", // "contain" shows the whole image (logos); "cover" fills the card (screenshots)
+      imageAlt: "Dhampur Green logo",
+      url: "https://www.dhampurgreen.com/",
+      linkLabel: "View project",
+    },
+    {
+      title: "Delight Foods",
+      type: "E-commerce website",
+      description:
+        "A Shopify online store for Delight Foods, selling authentic Indian mithai, snacks, bakery items and groceries with fresh delivery.",
+      image: "/work/delight-foods-logo.png",
+      imageFit: "contain",
+      imageAlt: "Delight Foods logo",
+      url: "https://www.delightfoods.com/",
       linkLabel: "View project",
     },
   ],
-  comingSoonSlots: 2,
+  comingSoonSlots: 1,
   comingSoonLabel: "Coming soon",
   comingSoonLine: "Your project could be here.",
 };

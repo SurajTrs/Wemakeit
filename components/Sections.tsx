@@ -7,6 +7,7 @@ import {
   contact,
   EMAIL,
   faq,
+  festiveOffer,
   finalCta,
   footer,
   formatPhone,
@@ -298,6 +299,22 @@ export function Hero() {
       <HeroBackdrop />
 
       <Container className="relative z-10 text-center">
+        {festiveOffer.enabled && (
+          <div className="mb-5">
+          <a
+            href="/#pricing"
+            className="anim-rise group inline-flex items-center gap-2 rounded-full border border-[#FFB938]/60 bg-[#FFB938]/10 px-4 py-1.5 text-sm font-semibold text-[#9A5B00] transition-colors hover:bg-[#FFB938]/20 dark:text-[#FFB938]"
+          >
+            <span aria-hidden="true">🪔</span>
+            <span className="sm:hidden">{festiveOffer.bannerShort}</span>
+            <span className="hidden sm:inline">{festiveOffer.banner}</span>
+            <span className="inline-flex items-center gap-1 text-fg/70 group-hover:text-fg">
+              <span className="hidden sm:inline">· {festiveOffer.bannerCta}</span>
+              <Icon name="arrow" className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+            </span>
+          </a>
+          </div>
+        )}
         <Label>{hero.eyebrow}</Label>
         <h1 id="hero-title" className="mx-auto font-display text-[3.8rem] lg:whitespace-nowrap leading-[0.98] tracking-tight text-fg sm:text-8xl lg:text-[6.5rem]">
           <Words text={before} />
@@ -528,12 +545,27 @@ export function Pricing() {
                 )}
                 <h3 className="text-xl font-semibold text-fg">{p.name}</h3>
                 <p className="mt-2 text-[15px] text-muted">{p.description}</p>
-                <p className="mt-6 flex items-baseline gap-2">
+                <p className="mt-6 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                  {festiveOffer.enabled && p.offerPrice && (
+                    <del className="text-xl text-muted sm:text-2xl decoration-[#FF5A4E] decoration-2">
+                      <span className="sr-only">Regular price </span>
+                      {p.price}
+                    </del>
+                  )}
                   <span className="font-display text-5xl tracking-tight text-fg sm:text-6xl">
-                    <T>{p.price}</T>
+                    {festiveOffer.enabled && p.offerPrice && <span className="sr-only">{festiveOffer.name} price </span>}
+                    <T>{festiveOffer.enabled && p.offerPrice ? p.offerPrice : p.price}</T>
                   </span>
-                  {p.priceNote && <span className="text-sm text-muted">{p.priceNote}</span>}
+                  {p.priceNote && !(festiveOffer.enabled && p.offerPrice) && <span className="text-sm text-muted">{p.priceNote}</span>}
                 </p>
+                {festiveOffer.enabled && p.offerPrice && (
+                  <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
+                    <span className="text-muted">{p.priceNote}</span>
+                    <span className="rounded-full border border-[#FFB938]/60 bg-[#FFB938]/10 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-[#9A5B00] dark:text-[#FFB938]">
+                      {festiveOffer.badge} · save {savings(p.price, p.offerPrice)}
+                    </span>
+                  </p>
+                )}
                 <ul className="mt-7 space-y-3 border-t border-line pt-7">
                   {p.features.map((f) => (
                     <li key={f} className="flex gap-3 text-[15px] text-fg/85">
@@ -566,6 +598,12 @@ export function Pricing() {
   );
 }
 
+/** "₹5,999" − "₹4,999" → "₹1,000" */
+const savings = (regular: string, offer: string) => {
+  const n = (v: string) => Number(v.replace(/[^\d]/g, ""));
+  return `₹${(n(regular) - n(offer)).toLocaleString("en-IN")}`;
+};
+
 /* ───────────────────────── Our work ───────────────────────── */
 export function Work() {
   return (
@@ -588,7 +626,7 @@ export function Work() {
                     alt={p.imageAlt}
                     fill
                     sizes="(min-width: 1024px) 400px, (min-width: 768px) 50vw, 100vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                    className={`${"imageFit" in p && p.imageFit === "contain" ? "object-contain p-10 sm:p-12" : "object-cover"} transition-transform duration-500 group-hover:scale-[1.03]`}
                   />
                 ) : (
                   <div className="relative flex h-full flex-col items-center justify-center gap-2 p-6 text-center">
