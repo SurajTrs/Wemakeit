@@ -7,7 +7,13 @@ import "./globals.css";
 const display = Instrument_Serif({ subsets: ["latin"], weight: "400", style: ["normal", "italic"], variable: "--font-display", display: "swap" });
 const body = Inter({ subsets: ["latin"], variable: "--font-body", display: "swap" });
 
-export const metadata: Metadata = {
+// Pages are rebuilt on Vercel at most every 10 minutes, so time-based content
+// (the festive offer in content/site.ts) switches off by itself without a new deploy.
+export const revalidate = 600;
+
+// A function (not a constant) so the description's price is re-checked on every rebuild.
+export async function generateMetadata(): Promise<Metadata> {
+  return {
   metadataBase: new URL(SITE_URL),
   title: { default: seo.title, template: "%s | WeMakeIt" },
   description: seo.description,
@@ -34,7 +40,8 @@ export const metadata: Metadata = {
     follow: true,
     googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 },
   },
-};
+  };
+}
 
 export const viewport: Viewport = {
   themeColor: [

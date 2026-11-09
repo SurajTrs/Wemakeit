@@ -3,7 +3,8 @@ import { FloatingWhatsApp, Footer, HomeSections } from "@/components/Sections";
 import { brand, currentPrice, EMAIL, faq, hasEmail, hasWhatsApp, legalEntity, liveSocials, pricing, seo, servicePages, SITE_URL, team, WHATSAPP_NUMBER, WHATSAPP_NUMBERS_EXTRA } from "@/content/site";
 
 // Structured data helps Google understand the business + shows FAQ info.
-const jsonLd = {
+// Built per render so offer prices stay current (see festiveOffer in content/site.ts).
+const buildJsonLd = () => ({
   "@context": "https://schema.org",
   "@graph": [
   {
@@ -58,7 +59,7 @@ const jsonLd = {
     mainEntity: faq.items.map((i) => ({ "@type": "Question", name: i.q, acceptedAnswer: { "@type": "Answer", text: i.a } })),
   },
   ],
-};
+});
 
 export default function Home() {
   return (
@@ -76,7 +77,7 @@ export default function Home() {
       </main>
       <Footer />
       <FloatingWhatsApp />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(buildJsonLd()) }} />
     </>
   );
 }

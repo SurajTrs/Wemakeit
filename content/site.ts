@@ -20,15 +20,22 @@ export const BOOKING_URL = ""; // empty = "Book a free call" buttons open WhatsA
 export const SITE_URL = "https://www.wemakeit.in";
 
 // ── Festive offer (Diwali) ──────────────────────────────────
-// While enabled, the site shows the regular price crossed out and the offer price.
-// Set enabled: false when the offer ends: every price on the site goes back to the regular price.
+// While active, the site shows the regular price crossed out and the offer price.
+// It switches off by itself after `endsAt` (pages refresh every 10 minutes, see app/layout.tsx),
+// and every price on the site goes back to the regular price. `enabled: false` turns it off right away.
 export const festiveOffer = {
   enabled: true,
+  endsAt: "2026-11-13T23:59:59+05:30", // 13 Nov 2026, 11:59 pm India time
   name: "Diwali offer",
   badge: "Diwali offer",
   banner: "Diwali offer: ₹1,000 off every website package",
   bannerShort: "Diwali offer: ₹1,000 off websites", // shown on phones
+  validLabel: "till 13 Nov",
   bannerCta: "See prices",
+  /** True while the offer is switched on and not yet expired. Checked each time a page is built. */
+  get active() {
+    return this.enabled && Date.now() < Date.parse(this.endsAt);
+  },
 };
 
 // Package prices: change them here only (pricing cards, FAQs, WhatsApp messages and SEO all read these).
@@ -36,11 +43,13 @@ export const packagePrices = {
   starter: { regular: "₹5,999", offer: "₹4,999" },
   growth: { regular: "₹8,999", offer: "₹7,999" },
 };
-/** The price customers pay right now: the offer price while the festive offer is on. */
+/** The price customers pay right now: the offer price while the festive offer is active. */
 export const currentPrice = (p: { regular: string; offer?: string }) =>
-  festiveOffer.enabled && p.offer ? p.offer : p.regular;
-const STARTER = currentPrice(packagePrices.starter);
-const GROWTH = currentPrice(packagePrices.growth);
+  festiveOffer.active && p.offer ? p.offer : p.regular;
+// Functions (not constants) so the price is re-checked whenever a page is rebuilt.
+const starterNow = () => currentPrice(packagePrices.starter);
+const growthNow = () => currentPrice(packagePrices.growth);
+const offerTag = () => (festiveOffer.active ? `${festiveOffer.name} ` : "");
 
 // ── Legal details (used on the Privacy, Terms and Refund pages) ──
 // Fill these before going live. If you're a sole proprietor, the legal name is
@@ -112,8 +121,9 @@ export const liveSocials = socials.filter((s) => !isPlaceholder(s.url) && /^http
 // Page titles get " | WeMakeIt" added automatically (see app/layout.tsx).
 export const seo = {
   title: "Web Design & Digital Marketing Agency in Gurgaon | WeMakeIt",
-  description:
-    `Website design, apps, SEO, ads and social media from one team in Gurgaon. Websites live in 7 days from ${STARTER} at fixed prices. Serving businesses across India.`,
+  get description() {
+    return `Website design, apps, SEO, ads and social media from one team in Gurgaon. Websites live in 7 days from ${starterNow()} at fixed prices. Serving businesses across India.`;
+  },
   // Google Search Console → Add property → "HTML tag" method → paste only the content="..." value here.
   googleVerification: "",
   keywords: [
@@ -297,10 +307,11 @@ export const offer = {
       ],
       goodFor: ["New businesses that need a professional first impression", "Existing sites that look outdated or don't bring enquiries"],
       seoTitle: "Website Design Company in Gurgaon",
-      seoDescription:
-        `Custom, mobile-first website design for small businesses in Gurgaon and across India. Designs built to turn visitors into enquiries. Websites from ${STARTER}.`,
+      get seoDescription() {
+        return `Custom, mobile-first website design for small businesses in Gurgaon and across India. Designs built to turn visitors into enquiries. Websites from ${starterNow()}.`;
+      },
       faqs: [
-        { q: "How much does website design cost?", a: `Our Starter Website is ${STARTER} one-time and the Business Growth package is ${GROWTH}${festiveOffer.enabled ? ` (${festiveOffer.name} prices)` : ""}, both with a mobile-friendly design. Bigger websites and online stores get a fixed quote before we start, so there are no surprises.` },
+        { q: "How much does website design cost?", get a() { return `Our Starter Website is ${starterNow()} one-time and the Business Growth package is ${growthNow()}${festiveOffer.active ? ` (${festiveOffer.name} prices, ${festiveOffer.validLabel})` : ""}, both with a mobile-friendly design. Bigger websites and online stores get a fixed quote before we start, so there are no surprises.`; } },
         { q: "Will I see the design before you build it?", a: "Yes. You get a design preview to approve before we start building, plus feedback rounds so the final design feels right to you." },
         { q: "Can you redesign my existing website?", a: "Yes. We start with an audit of speed, design, SEO and conversions, then share what to change and what it will cost. You decide what we work on." },
       ],
@@ -602,54 +613,83 @@ export const process = {
 };
 
 // ── Pricing ─────────────────────────────────────────────────
+// [REVIEW] Plan details below come from what the site already promises (7-day launch, 3 months'
+// support, 50/50 payments, service-page inclusions). Add page counts or anything else only if true.
 export const pricing = {
   label: "Pricing",
   heading: "Simple, fixed prices. *No hidden charges.*",
+  sub: "Every package is a one-time, fixed price agreed before we start. The website, domain and logins are in your name.",
+  includedLabel: "Included in package",
   plans: [
     {
       name: "Starter Website",
+      eyebrow: "For new & small businesses",
       price: packagePrices.starter.regular,
-      offerPrice: packagePrices.starter.offer as string | undefined, // shown while festiveOffer.enabled
-      priceNote: "one-time",
-      description: "Everything a small business needs to get online fast.",
+      offerPrice: packagePrices.starter.offer as string | undefined, // shown while festiveOffer.active
+      priceNote: "One-time, fixed price",
+      description: "Everything a small business needs to look professional online and start getting enquiries.",
       features: [
-        "Mobile-friendly design",
-        "WhatsApp chat button",
-        "Basic SEO setup",
-        "Live in 7 days",
+        "Custom design matched to your brand",
+        "Mobile-first layout for phones, tablets and desktops",
+        "WhatsApp chat button & enquiry form",
+        "Basic SEO setup: page titles, descriptions and sitemap",
+        "Secure HTTPS (SSL)",
+        "Help connecting your domain & hosting",
+        "Design preview & feedback rounds before launch",
       ],
+      facts: [
+        { label: "Delivery", value: "7 days" },
+        { label: "Support", value: "3 months free" },
+      ],
+      note: "The 7 days start once we have your content: text, logo and photos. Domain and hosting are registered in your name, and we set them up with you.",
       cta: "Get started",
-      ctaMessage: `Hi WeMakeIt, I'm interested in the Starter Website (${festiveOffer.enabled ? `${festiveOffer.name} ` : ""}${STARTER})`,
+      get ctaMessage() { return `Hi WeMakeIt, I'm interested in the Starter Website (${offerTag()}${starterNow()})`; },
       popular: false,
     },
     {
       name: "Business Growth",
+      eyebrow: "Most popular for local businesses",
       price: packagePrices.growth.regular,
       offerPrice: packagePrices.growth.offer as string | undefined,
-      priceNote: "one-time",
-      description: "Get online and start getting found by customers.",
+      priceNote: "One-time, fixed price",
+      description: "Your website plus everything that helps nearby customers find you on Google.",
       features: [
         "Everything in Starter",
-        "Google Business profile setup",
-        "SEO to rank locally",
-        "1 month of social media",
+        "Google Business Profile setup (Google Maps)",
+        "Local SEO to rank in your area",
+        "Google Search Console setup & sitemap submitted",
+        "Structured data so Google understands your business",
+        "1 month of social media posts",
       ],
+      facts: [
+        { label: "Website live", value: "7 days" },
+        { label: "Support", value: "3 months free" },
+      ],
+      note: "Social media covers your first month; you can continue monthly after. Google verifies your Business Profile itself, which can take a few days.",
       cta: "Choose Growth",
-      ctaMessage: `Hi WeMakeIt, I'm interested in the Business Growth package (${festiveOffer.enabled ? `${festiveOffer.name} ` : ""}${GROWTH})`,
+      get ctaMessage() { return `Hi WeMakeIt, I'm interested in the Business Growth package (${offerTag()}${growthNow()})`; },
       popular: true,
     },
     {
       name: "Custom / App / Enterprise",
-      price: "Let's talk",
+      eyebrow: "For apps, stores & custom builds",
+      price: "Custom quote",
       offerPrice: undefined as string | undefined,
-      priceNote: "",
+      priceNote: "Fixed price, agreed after a free call",
       description: "For products and businesses that need more than a website.",
       features: [
-        "Web apps & mobile apps",
-        "AI features & automation",
+        "Web apps, dashboards & MVPs",
+        "Android & iOS mobile apps",
+        "E-commerce stores with Razorpay payments",
+        "AI chatbots & automation",
         "Full marketing: SEO, ads and social",
         "Dedicated point of contact",
       ],
+      facts: [
+        { label: "Timeline", value: "In your quote" },
+        { label: "Payments", value: "Milestones" },
+      ],
+      note: "Paid in milestones: 50% to start and 50% before launch. Larger projects can be split into more stages.",
       cta: "Book a free call",
       ctaMessage: "Hi WeMakeIt, I want to discuss a custom solution for my business",
       popular: false,

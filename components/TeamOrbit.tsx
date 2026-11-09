@@ -21,19 +21,32 @@ const initials = (name: string) => {
 /** How far slot i is from facing the viewer, in degrees (−180…180). */
 const offset = (i: number, angle: number) => ((((i * STEP + angle) % 360) + 540) % 360) - 180;
 
+// Auto-move: "spin" = slow continuous turn, "step" = one card every STEP_EVERY ms.
+const MOTION: "spin" | "step" = "spin";
+const SPIN_SPEED = 9; // degrees per second while spinning (one card every 5 s)
+const STEP_EVERY = 5000;
+const RESUME_AFTER = 6000; // ms without interaction before auto-move starts again
+
+const frontOf = (angle: number) => ((Math.round(-angle / STEP) % SLOTS) + SLOTS) % SLOTS;
+const snap = (a: number) => Math.round(a / STEP) * STEP;
+
 /**
- * Team section as a 3D ring: cards stand on a glowing circular path, and swiping, dragging,
- * the arrows or the keyboard rotates the ring to bring the next person to the front.
- * Auto-rotates while in view until the visitor interacts. Reduced motion: no auto-rotate or animation.
+ * Team section as a 3D ring: cards stand on a glowing circular path. Swipe, drag, trackpad,
+ * keyboard or a tap on a side card turns the ring. While on screen it also turns by itself
+ * (MOTION), pausing on hover, touch, scroll gestures or an open skills panel, and resuming
+ * after RESUME_AFTER ms. Reduced motion: never moves on its own, no animation.
  */
 export function TeamOrbit({ members }: { members: Member[] }) {
   const stage = useRef<HTMLDivElement>(null);
-  const [angle, setAngle] = useState(0);
-  const [dragging, setDragging] = useState(false);
-  const [open, setOpen] = useState<Record<string, boolean>>({});
+  const ringRef = useRef<HTMLDivElement>(null);
+  const slotRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [angle, setAngleState] = useState(0);
   const angleRef = useRef(0);
-  angleRef.current = angle;
-  const auto = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [dragging, setDragging] = useState(false);
+  const [spinning, setSpinning] = useState(false);
+  const [open, setOpen] = useState<Record<string, boolean>>({});
+  const openRef = useRef(open);
+  openRef.current = open;
   const moved = useRef(false);
   const [reduce, setReduce] = useState(false);
   const [visible, setVisible] = useState(VISIBLE_SKILLS);
@@ -46,38 +59,97 @@ export function TeamOrbit({ members }: { members: Member[] }) {
     return () => mq.removeEventListener("change", apply);
   }, []);
 
-  const front = ((Math.round(-angle / STEP) % SLOTS) + SLOTS) % SLOTS;
+  const setAngle = useCallback((v: number) => { angleRef.current = v; setAngleState(v); }, []);
+  const front = frontOf(angle);
   const frontMember = front % members.length;
 
-  const stopAuto = useCallback(() => {
-    if (auto.current) clearInterval(auto.current);
-    auto.current = null;
+  // ── Auto-move controller ──
+  const hover = useRef(false);
+  const inView = useRef(false);
+  const lastTouch = useRef(0);
+  const ctl = useRef({ stop: () => {}, kick: () => {} });
+
+  /** Any visitor interaction: stop auto-move now; it may resume after RESUME_AFTER. */
+  const interact = useCallback(() => { lastTouch.current = Date.now(); ctl.current.stop(); }, []);
+
+  const rotateBy = useCallback((steps: number) => setAngle(snap(angleRef.current) - steps * STEP), [setAngle]);
+  const goToSlot = (i: number) => setAngle(angleRef.current - offset(i, angleRef.current));
+
+  // Paint the ring straight to the DOM (used every frame while spinning, without React re-renders).
+  const paint = useCallback((a: number) => {
+    if (ringRef.current) ringRef.current.style.transform = `translateZ(calc(var(--r) * -1)) rotateY(${a}deg)`;
+    slotRefs.current.forEach((el, i) => {
+      if (!el) return;
+      const t = Math.min(Math.abs(offset(i, a)) / 90, 1);
+      el.style.opacity = String(1 - t * 0.5);
+      el.style.filter = t > 0.05 ? `saturate(${1 - t * 0.5}) brightness(${1 - t * 0.3})` : "none";
+    });
   }, []);
-  const snap = (a: number) => Math.round(a / STEP) * STEP;
-  const rotateBy = useCallback((steps: number) => setAngle((a) => snap(a) - steps * STEP), []);
-  const goToSlot = (i: number) => {
-    const a = angleRef.current;
-    setAngle(a - offset(i, a));
-  };
 
-
-  // Auto-rotate only while the section is on screen, and never with reduced motion.
   useEffect(() => {
     const el = stage.current;
     if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    let interacted = false;
-    const start = () => {
-      if (interacted || auto.current) return;
-      auto.current = setInterval(() => { if (!document.hidden) rotateBy(1); }, 4200);
+    let raf = 0, last = 0, a = 0, lastStep = Date.now();
+    const canRun = () =>
+      inView.current && !hover.current && !document.hidden &&
+      !Object.values(openRef.current).some(Boolean) && Date.now() - lastTouch.current >= RESUME_AFTER;
+
+    const frame = (t: number) => {
+      if (!canRun()) { stop(); return; }
+      const dt = last ? Math.min((t - last) / 1000, 0.1) : 0;
+      last = t;
+      a -= SPIN_SPEED * dt;
+      paint(a);
+      if (frontOf(a) !== frontOf(angleRef.current)) setAngle(a); // update front card state ~every 5 s
+      raf = requestAnimationFrame(frame);
     };
-    const io = new IntersectionObserver(([e]) => (e.isIntersecting ? start() : stopAuto()), { threshold: 0.35 });
+    const stop = () => {
+      if (!raf) return;
+      cancelAnimationFrame(raf);
+      raf = 0;
+      setSpinning(false);
+      setAngle(snap(a)); // settle on the nearest card so it's readable
+    };
+    const kick = () => {
+      if (!canRun()) return;
+      if (MOTION === "step") {
+        if (Date.now() - lastStep >= STEP_EVERY) { lastStep = Date.now(); rotateBy(1); }
+        return;
+      }
+      if (raf) return;
+      a = angleRef.current;
+      last = 0;
+      setSpinning(true);
+      raf = requestAnimationFrame(frame);
+    };
+    ctl.current = { stop, kick };
+
+    const io = new IntersectionObserver(([e]) => { inView.current = e.isIntersecting; if (e.isIntersecting) kick(); else stop(); }, { threshold: 0.35 });
     io.observe(el);
-    const stop = () => { interacted = true; stopAuto(); };
-    el.addEventListener("pointerdown", stop);
-    el.addEventListener("keydown", stop);
-    el.addEventListener("focusin", stop);
-    return () => { io.disconnect(); stopAuto(); el.removeEventListener("pointerdown", stop); el.removeEventListener("keydown", stop); el.removeEventListener("focusin", stop); };
-  }, [rotateBy, stopAuto]);
+    const poll = setInterval(kick, 1000); // resumes once the visitor has been idle long enough
+    // Pause only while the mouse is on the centre (front) card; start turning again the moment it moves off.
+    const setHover = (on: boolean) => {
+      if (on === hover.current) return;
+      hover.current = on;
+      if (on) { stop(); return; }
+      lastTouch.current = 0;
+      kick();
+    };
+    const over = (e: PointerEvent) => { if (e.pointerType === "mouse") setHover(!!(e.target as Element).closest?.(".tcard.is-front")); };
+    const leave = (e: PointerEvent) => { if (e.pointerType === "mouse") setHover(false); };
+    el.addEventListener("pointerover", over);
+    el.addEventListener("pointerleave", leave);
+    const vis = () => (document.hidden ? stop() : kick());
+    document.addEventListener("visibilitychange", vis);
+    return () => {
+      io.disconnect(); clearInterval(poll); cancelAnimationFrame(raf);
+      el.removeEventListener("pointerover", over); el.removeEventListener("pointerleave", leave);
+      document.removeEventListener("visibilitychange", vis);
+    };
+  }, [paint, rotateBy, setAngle]);
+
+  // An open skills panel pauses auto-move.
+  useEffect(() => { if (Object.values(open).some(Boolean)) interact(); }, [open, interact]);
 
   // Trackpad two-finger swipe / horizontal mouse wheel: the ring follows, then snaps when the gesture stops.
   // Vertical scrolling is left alone so the page still scrolls normally.
@@ -89,21 +161,22 @@ export function TeamOrbit({ members }: { members: Member[] }) {
       const dx = e.shiftKey && !e.deltaX ? e.deltaY : e.deltaX; // Shift + wheel = horizontal on mice
       if (Math.abs(dx) <= Math.abs(e.shiftKey ? 0 : e.deltaY) || Math.abs(dx) < 1) return;
       e.preventDefault();
-      stopAuto();
+      interact();
       const width = el.querySelector<HTMLElement>(".orbit-ring")?.offsetWidth || 340;
       const px = e.deltaMode === 1 ? dx * 16 : dx; // line-based wheels report lines, not pixels
       setDragging(true);
-      setAngle((a) => a - px * (STEP / (width * 0.9)));
+      setAngle(angleRef.current - px * (STEP / (width * 0.9)));
       clearTimeout(idle);
-      idle = setTimeout(() => { setDragging(false); setAngle((a) => snap(a)); }, 140);
+      idle = setTimeout(() => { setDragging(false); setAngle(snap(angleRef.current)); }, 140);
     };
     el.addEventListener("wheel", onWheel, { passive: false });
     return () => { el.removeEventListener("wheel", onWheel); clearTimeout(idle); };
-  }, [stopAuto]);
+  }, [interact, setAngle]);
 
   // Drag / swipe: the ring follows the pointer, then snaps to the nearest card.
   const onPointerDown = (e: React.PointerEvent) => {
     if (e.button !== 0) return;
+    interact();
     const startX = e.clientX, startAngle = angleRef.current;
     const width = stage.current?.querySelector<HTMLElement>(".orbit-ring")?.offsetWidth || 340;
     moved.current = false;
@@ -119,7 +192,8 @@ export function TeamOrbit({ members }: { members: Member[] }) {
       window.removeEventListener("pointerup", up);
       window.removeEventListener("pointercancel", up);
       setDragging(false);
-      setAngle((a) => snap(a));
+      setAngle(snap(angleRef.current));
+      lastTouch.current = Date.now();
     };
     window.addEventListener("pointermove", move);
     window.addEventListener("pointerup", up);
@@ -140,15 +214,16 @@ export function TeamOrbit({ members }: { members: Member[] }) {
         onPointerDown={onPointerDown}
         onClickCapture={(e) => { if (moved.current) { e.preventDefault(); e.stopPropagation(); moved.current = false; } }}
         onKeyDown={(e) => {
-          if (e.key === "ArrowRight") { e.preventDefault(); rotateBy(1); }
-          if (e.key === "ArrowLeft") { e.preventDefault(); rotateBy(-1); }
+          if (e.key === "ArrowRight") { e.preventDefault(); interact(); rotateBy(1); }
+          if (e.key === "ArrowLeft") { e.preventDefault(); interact(); rotateBy(-1); }
         }}
       >
         <div
+          ref={ringRef}
           className="orbit-ring"
           style={{
             transform: `translateZ(calc(var(--r) * -1)) rotateY(${angle}deg)`,
-            transition: dragging || reduce ? "none" : "transform 1s cubic-bezier(0.22, 1, 0.36, 1)",
+            transition: dragging || spinning || reduce ? "none" : "transform 1s cubic-bezier(0.22, 1, 0.36, 1)",
           }}
         >
           <div className="orbit-path" aria-hidden="true">
@@ -171,6 +246,7 @@ export function TeamOrbit({ members }: { members: Member[] }) {
             return (
               <div
                 key={i}
+                ref={(el) => { slotRefs.current[i] = el; }}
                 className="orbit-slot"
                 style={{ "--i": i, opacity: 1 - t * 0.5, filter: t > 0.05 ? `saturate(${1 - t * 0.5}) brightness(${1 - t * 0.3})` : "none" } as React.CSSProperties}
                 aria-hidden={!isFront}
@@ -181,7 +257,7 @@ export function TeamOrbit({ members }: { members: Member[] }) {
                     tabIndex={-1}
                     aria-hidden="true"
                     className="absolute inset-0 z-10 cursor-pointer rounded-[1.9rem]"
-                    onClick={() => { if (!moved.current) { stopAuto(); goToSlot(i); } }}
+                    onClick={() => { if (!moved.current) { interact(); goToSlot(i); } }}
                   />
                 )}
                 <article inert={!isFront} className={`tcard ${isFront ? "is-front" : ""}`} style={{ "--c": c } as React.CSSProperties}>

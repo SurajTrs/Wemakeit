@@ -301,15 +301,15 @@ export function Hero() {
       <HeroBackdrop />
 
       <Container className="relative z-10 text-center">
-        {festiveOffer.enabled && (
+        {festiveOffer.active && (
           <div className="mb-5">
           <a
             href="/#pricing"
             className="anim-rise group inline-flex items-center gap-2 rounded-full border border-[#FFB938]/60 bg-[#FFB938]/10 px-4 py-1.5 text-sm font-semibold text-[#9A5B00] transition-colors hover:bg-[#FFB938]/20 dark:text-[#FFB938]"
           >
             <span aria-hidden="true">🪔</span>
-            <span className="sm:hidden">{festiveOffer.bannerShort}</span>
-            <span className="hidden sm:inline">{festiveOffer.banner}</span>
+            <span className="sm:hidden">{festiveOffer.bannerShort} {festiveOffer.validLabel}</span>
+            <span className="hidden sm:inline">{festiveOffer.banner} · {festiveOffer.validLabel}</span>
             <span className="inline-flex items-center gap-1 text-fg/70 group-hover:text-fg">
               <span className="hidden sm:inline">· {festiveOffer.bannerCta}</span>
               <Icon name="arrow" className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -526,58 +526,87 @@ export function Pricing() {
       <Container className="relative">
         <Label>{pricing.label}</Label>
         <SectionHeading id="pricing-title">{pricing.heading}</SectionHeading>
-        <div className="-mx-4 mt-8 flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto px-4 pb-4 [scrollbar-width:none] sm:mt-12 lg:mx-0 lg:grid lg:snap-none lg:overflow-visible lg:px-0 lg:pb-0 [&::-webkit-scrollbar]:hidden pt-5 lg:grid-cols-3 lg:items-stretch lg:pt-0">
+        <p className="mt-5 max-w-2xl text-lg leading-relaxed text-muted">{pricing.sub}</p>
+        <div className="-mx-4 mt-8 flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto px-4 pb-4 pt-5 [scrollbar-width:none] sm:mt-12 lg:mx-0 lg:grid lg:snap-none lg:grid-cols-3 lg:items-stretch lg:overflow-visible lg:px-0 lg:pb-0 lg:pt-0 [&::-webkit-scrollbar]:hidden">
           {pricing.plans.map((p, i) => {
             const href = whatsappLink(p.ctaMessage);
+            const onOffer = festiveOffer.active && !!p.offerPrice;
             return (
               <article
                 key={p.name}
                 data-reveal
                 style={d(i, 120)}
-                className={`spotlight relative flex flex-col rounded-[1.75rem] border p-6 w-[85%] shrink-0 snap-start sm:w-[60%] lg:w-auto transition-transform duration-300 hover:-translate-y-1 sm:p-8 ${
+                className={`spotlight relative flex w-[88%] shrink-0 snap-start flex-col rounded-[1.75rem] border p-6 transition-transform duration-300 hover:-translate-y-1 sm:w-[60%] sm:p-8 lg:w-auto ${
                   p.popular
-                    ? "border-accent/70 bg-[linear-gradient(180deg,rgba(198,244,50,0.06),rgb(var(--surface))_40%)] shadow-[0_30px_80px_-40px_rgb(0_0_0/0.4)] lg:-my-4 lg:py-12"
+                    ? "border-accent/70 bg-[linear-gradient(180deg,rgba(198,244,50,0.07),rgb(var(--surface))_35%)] shadow-[0_30px_80px_-40px_rgb(0_0_0/0.45)]"
                     : "border-line bg-surface"
                 }`}
               >
                 {p.popular && (
-                  <span className="absolute -top-3.5 left-7 rounded-full bg-lime px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-ink sm:left-8">
+                  <span className="absolute -top-3.5 left-6 rounded-full bg-lime px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-ink sm:left-8">
                     {pricing.popularBadge}
                   </span>
                 )}
-                <h3 className="text-xl font-semibold text-fg">{p.name}</h3>
-                <p className="mt-2 text-[15px] text-muted">{p.description}</p>
-                <p className="mt-6 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                  {festiveOffer.enabled && p.offerPrice && (
-                    <del className="text-xl text-muted sm:text-2xl decoration-[#FF5A4E] decoration-2">
-                      <span className="sr-only">Regular price </span>
-                      {p.price}
-                    </del>
-                  )}
-                  <span className="font-display text-5xl tracking-tight text-fg sm:text-6xl">
-                    {festiveOffer.enabled && p.offerPrice && <span className="sr-only">{festiveOffer.name} price </span>}
-                    <T>{festiveOffer.enabled && p.offerPrice ? p.offerPrice : p.price}</T>
-                  </span>
-                  {p.priceNote && !(festiveOffer.enabled && p.offerPrice) && <span className="text-sm text-muted">{p.priceNote}</span>}
-                </p>
-                {festiveOffer.enabled && p.offerPrice && (
-                  <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
-                    <span className="text-muted">{p.priceNote}</span>
-                    <span className="rounded-full border border-[#FFB938]/60 bg-[#FFB938]/10 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-[#9A5B00] dark:text-[#FFB938]">
-                      {festiveOffer.badge} · save {savings(p.price, p.offerPrice)}
+
+                {/* Who it's for + name */}
+                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-accent">{p.eyebrow}</p>
+                <h3 className="mt-2 text-2xl font-semibold tracking-tight text-fg">{p.name}</h3>
+                <p className="mt-2 text-[15px] leading-relaxed text-muted lg:min-h-[4.9rem]">{p.description}</p>
+
+                {/* Price */}
+                <div className="mt-6 border-t border-line pt-6">
+                  <p className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                    {onOffer && (
+                      <del className="text-xl text-muted decoration-[#FF5A4E] decoration-2 sm:text-2xl">
+                        <span className="sr-only">Regular price </span>
+                        {p.price}
+                      </del>
+                    )}
+                    <span className={`font-display tracking-tight text-fg ${p.offerPrice || /^₹/.test(p.price) ? "text-5xl sm:text-6xl" : "text-[2.6rem] leading-none sm:text-5xl"}`}>
+                      {onOffer && <span className="sr-only">{festiveOffer.name} price </span>}
+                      <T>{onOffer ? p.offerPrice! : p.price}</T>
                     </span>
                   </p>
-                )}
-                <ul className="mt-7 space-y-3 border-t border-line pt-7">
+                  <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1.5 text-sm">
+                    <span className="text-muted">{p.priceNote}</span>
+                    {onOffer && (
+                      <span className="rounded-full border border-[#FFB938]/60 bg-[#FFB938]/10 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-[#9A5B00] dark:text-[#FFB938]">
+                        {festiveOffer.badge} · save {savings(p.price, p.offerPrice!)}
+                      </span>
+                    )}
+                  </p>
+                </div>
+
+                {/* Key facts */}
+                <dl className="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line">
+                  {p.facts.map((f) => (
+                    <div key={f.label} className="bg-raised/60 px-4 py-3">
+                      <dt className="text-[11px] font-medium uppercase tracking-[0.12em] text-muted">{f.label}</dt>
+                      <dd className="mt-0.5 text-[15px] font-semibold text-fg">{f.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+
+                {/* Inclusions */}
+                <p className="mt-7 text-[11px] font-semibold uppercase tracking-[0.16em] text-fg/60">{pricing.includedLabel}</p>
+                <ul className="mt-4 space-y-3">
                   {p.features.map((f) => (
-                    <li key={f} className="flex gap-3 text-[15px] text-fg/85">
-                      <Icon name="check" className="mt-0.5 h-5 w-5 shrink-0 text-accent" />
+                    <li key={f} className="flex gap-3 text-[15px] leading-snug text-fg/85">
+                      <span className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${p.popular ? "bg-lime text-ink" : "bg-accent/15 text-accent"}`}>
+                        <Icon name="check" className="h-3 w-3" strokeWidth={3} />
+                      </span>
                       {f}
                     </li>
                   ))}
                 </ul>
-                <div className="mt-auto pt-9">
-                  <a href={href} {...linkProps(href)} className={`${btn.base} ${p.popular ? btn.lime : btn.ghost} w-full`}>
+
+                {/* Terms note + CTA */}
+                <div className="mt-auto pt-8">
+                  <p className="flex gap-2.5 rounded-2xl border border-line bg-canvas/60 p-4 text-[13px] leading-relaxed text-muted">
+                    <Icon name="shield" className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
+                    <span>{p.note}</span>
+                  </p>
+                  <a href={href} {...linkProps(href)} className={`${btn.base} ${p.popular ? btn.lime : btn.ghost} mt-5 w-full`}>
                     {p.cta}
                   </a>
                 </div>
