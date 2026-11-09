@@ -59,15 +59,7 @@ export function TeamOrbit({ members }: { members: Member[] }) {
     const a = angleRef.current;
     setAngle(a - offset(i, a));
   };
-  const goToMember = (m: number) => {
-    const a = angleRef.current;
-    let best = Infinity;
-    for (let i = m; i < SLOTS; i += members.length) {
-      const d = offset(i, a);
-      if (Math.abs(d) < Math.abs(best)) best = d;
-    }
-    setAngle(a - best);
-  };
+
 
   // Auto-rotate only while the section is on screen, and never with reduced motion.
   useEffect(() => {
@@ -334,38 +326,7 @@ export function TeamOrbit({ members }: { members: Member[] }) {
         </div>
       </div>
 
-      {/* Controls */}
-      <div className="flex items-center justify-center gap-4">
-        <button
-          type="button"
-          onClick={() => { stopAuto(); rotateBy(-1); }}
-          aria-label="Previous team member"
-          className="flex h-12 w-12 items-center justify-center rounded-full border border-line bg-surface text-fg transition-colors hover:border-accent/60 hover:text-accent"
-        >
-          <Icon name="arrowLeft" className="h-4 w-4" />
-        </button>
-        <div className="flex items-center gap-2">
-          {members.map((mm, i) => (
-            <button
-              key={mm.name}
-              type="button"
-              onClick={() => { stopAuto(); goToMember(i); }}
-              aria-label={`Show ${mm.name}`}
-              aria-current={frontMember === i ? "true" : undefined}
-              className={`h-2.5 rounded-full transition-all duration-300 ${frontMember === i ? "w-8 bg-lime" : "w-2.5 bg-fg/20 hover:bg-fg/40"}`}
-            />
-          ))}
-        </div>
-        <button
-          type="button"
-          onClick={() => { stopAuto(); rotateBy(1); }}
-          aria-label="Next team member"
-          className="flex h-12 w-12 items-center justify-center rounded-full border border-line bg-surface text-fg transition-colors hover:border-accent/60 hover:text-accent"
-        >
-          <Icon name="arrow" className="h-4 w-4" />
-        </button>
-      </div>
-      <p className="mt-4 text-center text-sm text-muted" aria-live="polite">
+      <p className="mt-1 text-center text-sm text-muted" aria-live="polite">
         <span className="font-semibold text-fg">{m.name}</span> · {m.role}
       </p>
     </div>
