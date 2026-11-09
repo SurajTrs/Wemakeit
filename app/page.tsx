@@ -1,6 +1,6 @@
 import { Navbar } from "@/components/Navbar";
 import { FloatingWhatsApp, Footer, HomeSections } from "@/components/Sections";
-import { brand, currentPrice, EMAIL, faq, hasEmail, hasWhatsApp, legalEntity, liveSocials, pricing, seo, servicePages, SITE_URL, WHATSAPP_NUMBER, WHATSAPP_NUMBERS_EXTRA } from "@/content/site";
+import { brand, currentPrice, EMAIL, faq, hasEmail, hasWhatsApp, legalEntity, liveSocials, pricing, seo, servicePages, SITE_URL, team, WHATSAPP_NUMBER, WHATSAPP_NUMBERS_EXTRA } from "@/content/site";
 
 // Structured data helps Google understand the business + shows FAQ info.
 const jsonLd = {
@@ -30,6 +30,7 @@ const jsonLd = {
     ...(liveSocials.length > 0 && { sameAs: liveSocials.map((s) => s.url) }),
     areaServed: [{ "@type": "City", name: "Gurugram" }, { "@type": "State", name: "Haryana" }, { "@type": "Country", name: "India" }],
     knowsAbout: servicePages.map((p) => p.title),
+    employee: team.members.map((m) => ({ "@type": "Person", name: m.name, jobTitle: m.role, knowsAbout: m.skills.map((k) => k.label) })),
     hasOfferCatalog: {
       "@type": "OfferCatalog",
       name: "Web design, app development and digital marketing services",

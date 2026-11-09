@@ -26,6 +26,7 @@ import {
   services,
   servicePages,
   socials,
+  team,
   ways,
   whatsappLink,
   whatsappLinkFor,
@@ -35,6 +36,7 @@ import {
 import { ContactForm } from "./ContactForm";
 import { CountUp } from "./CountUp";
 import { Problem } from "./Problem";
+import { TeamOrbit } from "./TeamOrbit";
 import { ServiceRing } from "./ServiceRing";
 import { Icon, SocialIcon, WhatsAppIcon } from "./Icon";
 import { Accent, btn, Container, Label, SectionHeading } from "./ui";
@@ -691,6 +693,20 @@ export function Why() {
   );
 }
 
+/* ───────────────────────── Team ───────────────────────── */
+export function Team() {
+  return (
+    <section id="team" aria-labelledby="team-title" className="scroll-mt-20 overflow-hidden pb-6 pt-16 sm:pb-8 sm:pt-20 lg:pb-10 lg:pt-28">
+      <Container>
+        <Label>{team.label}</Label>
+        <SectionHeading id="team-title">{team.heading}</SectionHeading>
+        <p className="mt-5 max-w-2xl text-lg leading-relaxed text-muted">{team.sub}</p>
+      </Container>
+      <TeamOrbit members={team.members} />
+    </section>
+  );
+}
+
 /* ───────────────────────── FAQ ───────────────────────── */
 export function Faq({ items = faq.items, heading = faq.heading, className = "" }: { items?: { q: string; a: string }[]; heading?: string; className?: string }) {
   return (
@@ -891,7 +907,8 @@ export function HomeSections() {
       <Pricing />
       <Work />
       <Why />
-      <Faq />
+      <Team />
+      <Faq className="pt-10 sm:pt-12 lg:pt-16" />
       <Contact />
       <FinalCta />
     </>

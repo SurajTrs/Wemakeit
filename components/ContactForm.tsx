@@ -11,7 +11,7 @@ const empty: Fields = { name: "", phone: "", businessType: "", service: "", mess
 
 function buildMessage(f: Fields) {
   return [
-    "Hi WeMakeIt, I want to discuss a project.",
+    "Hi WeMakeIt, I would like to discuss my business requirements.",
     "",
     `Name: ${f.name}`,
     `Phone: ${f.phone}`,

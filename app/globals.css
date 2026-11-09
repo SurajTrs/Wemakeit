@@ -159,3 +159,53 @@
 @keyframes ring-spin { from { transform: rotateX(-6deg) rotateY(0deg); } to { transform: rotateX(-6deg) rotateY(-360deg); } }
 .ring-spin { animation: ring-spin 36s linear infinite; transform-style: preserve-3d; }
 .ring-wrap:hover .ring-spin { animation-play-state: paused; }
+
+/* ───────────────────────── Team orbit (components/TeamOrbit.tsx) ─────────────────────────
+   Cards stand on a 3D circular path; the ring rotates to bring the next card to the front. */
+.orbit-stage {
+  --w: 340px; --h: 580px; --r: 450px; /* --r = (w/2) / tan(22.5°) + gap, for 8 slots */
+  position: relative; height: calc(var(--h) + 50px);
+  perspective: 1600px; perspective-origin: 50% 28%;
+  touch-action: pan-y; cursor: grab; user-select: none; -webkit-user-select: none; outline: none;
+}
+.orbit-stage.is-dragging { cursor: grabbing; }
+.orbit-stage:focus-visible { box-shadow: 0 0 0 2px rgb(var(--accent) / 0.7); border-radius: 2rem; }
+.orbit-ring { position: absolute; left: 50%; top: 20px; width: var(--w); height: var(--h); margin-left: calc(var(--w) / -2); transform-style: preserve-3d; }
+.orbit-slot { position: absolute; inset: 0; transform: rotateY(calc(var(--i) * 45deg)) translateZ(var(--r)); backface-visibility: hidden; -webkit-backface-visibility: hidden; transition: opacity .5s, filter .5s; }
+.orbit-path {
+  --d: calc(var(--r) * 2 + 48px);
+  position: absolute; left: 50%; top: 100%; width: var(--d); height: var(--d); margin: calc(var(--d) / -2) 0 0 calc(var(--d) / -2);
+  border-radius: 50%; transform: rotateX(90deg); pointer-events: none;
+  border: 2px solid rgb(var(--accent) / 0.55);
+  box-shadow: 0 0 40px rgb(198 244 50 / 0.28), inset 0 0 70px rgb(198 244 50 / 0.22);
+  background: radial-gradient(circle, rgb(198 244 50 / 0.22) 0%, transparent 62%);
+}
+.orbit-path::after { content: ""; position: absolute; inset: 22%; border-radius: 50%; border: 1px dashed rgb(var(--accent) / 0.45); }
+.orbit-node { position: absolute; left: 50%; top: 50%; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: #C6F432; box-shadow: 0 0 18px #C6F432; }
+@media (max-width: 640px) {
+  .orbit-stage { --w: 286px; --h: 560px; --r: 385px; height: calc(var(--h) + 44px); perspective: 1150px; }
+}
+
+/* Premium card: gradient border, grain, glow, watermark, sheen */
+.tcard { position: relative; height: 100%; border-radius: 1.9rem; padding: 1px;
+  background: linear-gradient(160deg, rgb(var(--c) / 0.85), rgb(var(--c) / 0.08) 38%, rgb(var(--line)) 60%, rgb(var(--c) / 0.45));
+  box-shadow: 0 50px 100px -50px rgb(0 0 0 / 0.65), 0 0 0 0 rgb(var(--c) / 0); transition: box-shadow .5s; }
+.tcard.is-front { box-shadow: 0 60px 120px -50px rgb(0 0 0 / 0.7), 0 0 60px -18px rgb(var(--c) / 0.55); }
+.tcard-inner { position: relative; height: 100%; overflow: hidden; border-radius: calc(1.9rem - 1px); display: flex; flex-direction: column;
+  background:
+    radial-gradient(90% 55% at 100% 0%, rgb(var(--c) / 0.20), transparent 60%),
+    radial-gradient(70% 40% at 0% 100%, rgb(var(--c) / 0.08), transparent 70%),
+    rgb(var(--surface)); }
+.tcard-inner::before { /* film grain */
+  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .07; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+.tcard-inner::after { /* sheen that sweeps across when the card comes to the front */
+  content: ""; position: absolute; top: -20%; bottom: -20%; left: -60%; width: 45%; pointer-events: none; opacity: 0;
+  background: linear-gradient(100deg, transparent, rgb(255 255 255 / 0.16), transparent); transform: skewX(-12deg); }
+.tcard.is-front .tcard-inner::after { animation: tcard-sheen 1.4s cubic-bezier(0.22, 1, 0.36, 1) .35s 1; }
+@keyframes tcard-sheen { 0% { left: -60%; opacity: 1; } 100% { left: 130%; opacity: 1; } }
+.tcard-watermark { position: absolute; right: -0.6rem; top: -1.6rem; font-family: var(--font-display), Georgia, serif; font-size: 9.5rem; line-height: 1; letter-spacing: -0.04em;
+  color: rgb(var(--c) / 0.10); pointer-events: none; user-select: none; }
+.tcard-avatar { position: relative; width: 76px; height: 76px; border-radius: 9999px; padding: 3px;
+  background: conic-gradient(from 210deg, rgb(var(--c)), rgb(var(--c) / 0.15), rgb(var(--c))); }
+.tcard-avatar > * { width: 100%; height: 100%; border-radius: 9999px; border: 3px solid rgb(var(--surface)); }

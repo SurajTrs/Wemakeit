@@ -54,7 +54,7 @@ export const legalEntity = {
 };
 
 export const WHATSAPP_DEFAULT_MESSAGE =
-  "Hi WeMakeIt, I want to discuss a project";
+  "Hi WeMakeIt, I would like to discuss my business requirements";
 
 // ── Link helpers ────────────────────────────────────────────
 // These keep every button working even while a detail above is still a
@@ -66,7 +66,7 @@ export const hasEmail = !isPlaceholder(EMAIL) && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.te
 export const hasInstagram = !isPlaceholder(INSTAGRAM_HANDLE);
 export const hasBooking = !isPlaceholder(BOOKING_URL) && /^https?:\/\//.test(BOOKING_URL);
 
-export const mailtoLink = (body?: string, subject = "Project enquiry | WeMakeIt") =>
+export const mailtoLink = (body?: string, subject = "Business enquiry | WeMakeIt") =>
   `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}${body ? `&body=${encodeURIComponent(body)}` : ""}`;
 
 /** Best available "message us" link: WhatsApp → email → the on-page contact form. */
@@ -170,10 +170,10 @@ export const hero = {
     { value: "10", label: "Services in-house" },
     { value: "1 team", label: "One point of contact" },
   ],
-  // Product-style "project window" under the hero (decorative; keep claims true).
+  // Product-style "dashboard window" under the hero (decorative; keep claims true).
   // icon keys must match components/Icon.tsx
   preview: {
-    title: "Your project",
+    title: "Your business",
     status: "On track",
     scope: {
       label: "Scope",
@@ -202,7 +202,7 @@ export const hero = {
     },
     team: {
       label: "Your team",
-      role: "Your project lead",
+      role: "Your account manager",
       points: [
         { icon: "whatsapp", text: "One shared WhatsApp group" },
         { icon: "tag", text: "Fixed quote, agreed upfront" },
@@ -258,7 +258,7 @@ export const ways = {
     },
     {
       number: "03",
-      title: "Freelance & project work",
+      title: "One-off tasks & fixed-scope work",
       intro: "Need just one task done, done right and done fast? We do that too.",
       points: [
         "A landing page or a single feature",
@@ -325,7 +325,7 @@ export const offer = {
         "Website development for businesses in Gurgaon and across India: fast, secure, mobile-first sites that load in under 2 seconds. Live in 7 days at fixed prices.",
       faqs: [
         { q: "How long does it take to build a website?", a: "A small business website goes live in 7 days once we have your content (text, logo and photos). Larger websites get a clear timeline in your quote." },
-        { q: "Do I own my website and domain?", a: "Yes. Once the project is paid in full, the website, domain and all logins are in your name. You're never locked in with us." },
+        { q: "Do I own my website and domain?", a: "Yes. Once payment is complete, the website, domain and all logins are in your name. You're never locked in with us." },
         { q: "Can you help with my domain and hosting?", a: "Yes. We help you choose and connect your domain and hosting, and set up secure HTTPS so your site shows the padlock in browsers." },
       ],
     },
@@ -450,7 +450,7 @@ export const moreServices = [
       faqs: [
         { q: "How much does it cost to build a mobile app?", a: "It depends on the screens and features you need. After a free call we send a fixed quote with a clear scope and timeline, so the price we agree is the price you pay." },
         { q: "Do you build for both Android and iOS?", a: "Yes. We build apps for both Android and iOS and publish them to the Google Play Store and Apple App Store." },
-        { q: "Will I own the app's code?", a: "Yes. Once the project is paid in full, the code and store accounts are yours." },
+        { q: "Will I own the app's code?", a: "Yes. Once payment is complete, the code and store accounts are yours." },
       ],
     },
     {
@@ -651,7 +651,7 @@ export const pricing = {
         "Dedicated point of contact",
       ],
       cta: "Book a free call",
-      ctaMessage: "Hi WeMakeIt, I want to discuss a custom project",
+      ctaMessage: "Hi WeMakeIt, I want to discuss a custom solution for my business",
       popular: false,
     },
   ],
@@ -664,7 +664,7 @@ export const pricing = {
 // ── Our work ────────────────────────────────────────────────
 export const work = {
   label: "Our work",
-  heading: "Recent *projects*.",
+  heading: "Our *client work*.",
   projects: [
     {
       title: "Dhampur Green",
@@ -675,7 +675,7 @@ export const work = {
       imageFit: "contain", // "contain" shows the whole image (logos); "cover" fills the card (screenshots)
       imageAlt: "Dhampur Green logo",
       url: "https://www.dhampurgreen.com/",
-      linkLabel: "View project",
+      linkLabel: "Visit website",
     },
     {
       title: "Delight Foods",
@@ -686,12 +686,12 @@ export const work = {
       imageFit: "contain",
       imageAlt: "Delight Foods logo",
       url: "https://www.delightfoods.com/",
-      linkLabel: "View project",
+      linkLabel: "Visit website",
     },
   ],
   comingSoonSlots: 1,
   comingSoonLabel: "Coming soon",
-  comingSoonLine: "Your project could be here.",
+  comingSoonLine: "Your business could be next.",
 };
 
 // ── Why WeMakeIt ────────────────────────────────────────────
@@ -699,11 +699,123 @@ export const why = {
   label: "Why WeMakeIt",
   heading: "Why businesses choose *one team* over five freelancers.",
   points: [
-    { title: "One team, one point of contact", line: "One person who knows your project end to end. No more forwarding messages between freelancers." },
+    { title: "One team, one point of contact", line: "One person who knows your business end to end. No more forwarding messages between freelancers." },
     { title: "Fixed prices, no hidden charges", line: "You get a clear quote before we start. The price we agree is the price you pay." },
     { title: "Fast delivery, websites in 7 days", line: "Small business websites go live in a week, with progress updates every few days." },
     { title: "Built by real developers", line: "Full-stack, AI and mobile app experience in-house, so we can build what templates can't." },
   ],
+};
+
+// ── Team ────────────────────────────────────────────────────
+// Each skill can link to a service page (slug from offer.items / moreServices) or stay plain text.
+// Add a photo by putting it in /public/team/ and setting `photo: "/team/name.jpg"`; otherwise initials are shown.
+export const team = {
+  label: "Our team",
+  heading: "The experts behind *your growth*.",
+  sub: "A small team that covers everything your business needs online, so you never have to coordinate between freelancers.",
+  members: [
+    {
+      name: "Suraj Rawat",
+      shortName: "Suraj", // used on the "Talk to …" button
+      whatsapp: "919555219911", // "Talk to Suraj" opens this number; leave out to use the main WHATSAPP_NUMBER
+      role: "Senior Software Engineer",
+      photo: "",
+      bio: "Leads technology for every client: websites, web and mobile apps, AI chatbots and automation, plus graphic design, video and ongoing maintenance.",
+      skills: [
+        { label: "Websites", slug: "development" },
+        { label: "Next.js & React", slug: "development" },
+        { label: "UI/UX design", slug: "web-design" },
+        { label: "E-commerce stores", slug: "e-commerce" },
+        { label: "Razorpay payments", slug: "e-commerce" },
+        { label: "Web apps & MVPs", slug: "web-app-development" },
+        { label: "Backend & databases", slug: "web-app-development" },
+        { label: "APIs & integrations", slug: "web-app-development" },
+        { label: "Android & iOS apps", slug: "mobile-app-development" },
+        { label: "AI chatbots", slug: "ai-chatbots-automation" },
+        { label: "WhatsApp chatbots", slug: "ai-chatbots-automation" },
+        { label: "Automation", slug: "ai-chatbots-automation" },
+        { label: "Website speed optimisation", slug: "development" },
+        { label: "Hosting & domains", slug: "development" },
+        { label: "Logo & graphic design", slug: "branding-logo-design" },
+        { label: "Social media creatives", slug: "branding-logo-design" },
+        { label: "Video production" },
+        { label: "Maintenance & bug fixes", slug: "free-support" },
+      ],
+    },
+    {
+      name: "Mohammad Danish Ansari",
+      shortName: "Danish", // used on the "Talk to …" button
+      role: "Web & Growth Marketing",
+      photo: "",
+      bio: "Builds websites and grows them: runs marketing and ad campaigns and manages social media pages so your brand stays visible.",
+      skills: [
+        { label: "Websites", slug: "web-design" },
+        { label: "Landing pages", slug: "web-design" },
+        { label: "SEO", slug: "seo" },
+        { label: "Local SEO", slug: "seo" },
+        { label: "Keyword research", slug: "seo" },
+        { label: "Google Business Profile", slug: "seo" },
+        { label: "Google Ads", slug: "google-meta-ads" },
+        { label: "Facebook & Instagram ads", slug: "google-meta-ads" },
+        { label: "Lead generation", slug: "google-meta-ads" },
+        { label: "Campaign tracking & reports", slug: "google-meta-ads" },
+        { label: "Social media management", slug: "social-media-marketing" },
+        { label: "Content calendars", slug: "social-media-marketing" },
+        { label: "Posts & reels", slug: "social-media-marketing" },
+        { label: "Captions & content writing", slug: "social-media-marketing" },
+        { label: "Instagram growth", slug: "social-media-marketing" },
+        { label: "WhatsApp marketing" },
+        { label: "Competitor research" },
+      ],
+    },
+    {
+      name: "Rizwan Khan",
+      shortName: "Rizwan", // used on the "Talk to …" button
+      role: "Web & Growth Marketing",
+      photo: "",
+      bio: "Works on websites and marketing: plans ad campaigns and handles social media so the right customers find you.",
+      skills: [
+        { label: "Websites", slug: "web-design" },
+        { label: "Landing pages", slug: "web-design" },
+        { label: "SEO", slug: "seo" },
+        { label: "Local SEO", slug: "seo" },
+        { label: "Keyword research", slug: "seo" },
+        { label: "Google Business Profile", slug: "seo" },
+        { label: "Google Ads", slug: "google-meta-ads" },
+        { label: "Facebook & Instagram ads", slug: "google-meta-ads" },
+        { label: "Lead generation", slug: "google-meta-ads" },
+        { label: "Campaign tracking & reports", slug: "google-meta-ads" },
+        { label: "Social media management", slug: "social-media-marketing" },
+        { label: "Content calendars", slug: "social-media-marketing" },
+        { label: "Posts & reels", slug: "social-media-marketing" },
+        { label: "Captions & content writing", slug: "social-media-marketing" },
+        { label: "Instagram growth", slug: "social-media-marketing" },
+        { label: "WhatsApp marketing" },
+        { label: "Competitor research" },
+      ],
+    },
+    {
+      name: "Vipin Rawat",
+      shortName: "Vipin", // used on the "Talk to …" button
+      role: "Sales, Video & Support",
+      photo: "",
+      bio: "Your first point of contact: helps you pick the right package, edits videos for your brand and supports you after launch.",
+      skills: [
+        { label: "Sales & consultations" },
+        { label: "Requirement gathering" },
+        { label: "Package guidance" },
+        { label: "Quotes & proposals" },
+        { label: "Video editing" },
+        { label: "Reels & short videos", slug: "social-media-marketing" },
+        { label: "YouTube videos" },
+        { label: "Ad videos", slug: "google-meta-ads" },
+        { label: "Client onboarding" },
+        { label: "Progress updates" },
+        { label: "WhatsApp support" },
+        { label: "After-launch support", slug: "free-support" },
+      ],
+    },
+  ] as { name: string; shortName: string; whatsapp?: string; role: string; photo: string; bio: string; skills: { label: string; slug?: string }[] }[],
 };
 
 // ── FAQ ─────────────────────────────────────────────────────
@@ -718,7 +830,7 @@ export const faq = {
     },
     {
       q: "Do I own my website?",
-      a: "Yes. Once the project is paid in full, the website, domain and all logins are in your name. You're never locked in with us.",
+      a: "Yes. Once payment is complete, the website, domain and all logins are in your name. You're never locked in with us.",
     },
     {
       q: "Can you improve my existing website?",
@@ -742,7 +854,7 @@ export const faq = {
 // ── Contact form ────────────────────────────────────────────
 export const contact = {
   label: "Contact",
-  heading: "Tell us about your *project*.",
+  heading: "Tell us about your *business*.",
   sub: "Fill this in and it opens WhatsApp (or email) with your details ready to send. We usually reply within 2 hours, Monday to Saturday.",
   fields: {
     name: "Your name",
@@ -770,7 +882,7 @@ export const contact = {
   submitEmailOnly: "Send by email",
   sent: "Your message is ready. Just press send in the app that opened.",
   notConfigured: "Online enquiries aren't switched on yet. Please check back soon.",
-  emailSubject: "New project enquiry from the WeMakeIt website",
+  emailSubject: "New business enquiry from the WeMakeIt website",
 };
 
 // ── Final CTA band ──────────────────────────────────────────
