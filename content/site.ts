@@ -655,6 +655,7 @@ export const pricing = {
       description: "Your website plus everything that helps nearby customers find you on Google.",
       features: [
         "Everything in Starter",
+        "FREE .com or .in domain + hosting for the 1st year",
         "Google Business Profile setup (Google Maps)",
         "Local SEO to rank in your area",
         "Google Search Console setup & sitemap submitted",
@@ -665,7 +666,7 @@ export const pricing = {
         { label: "Website live", value: "7 days" },
         { label: "Support", value: "3 months free" },
       ],
-      note: "Social media covers your first month; you can continue monthly after. Google verifies your Business Profile itself, which can take a few days.",
+      note: "Free domain and hosting cover the first 12 months, with the domain registered in your name. Renewal charges from year 2 are shared upfront. Business email isn't included. Social media covers your first month.",
       cta: "Choose Growth",
       get ctaMessage() { return `Hi WeMakeIt, I'm interested in the Business Growth package (${offerTag()}${growthNow()})`; },
       popular: true,

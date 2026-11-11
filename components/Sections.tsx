@@ -591,7 +591,7 @@ export function Pricing() {
                 <p className="mt-7 text-[11px] font-semibold uppercase tracking-[0.16em] text-fg/60">{pricing.includedLabel}</p>
                 <ul className="mt-4 space-y-3">
                   {p.features.map((f) => (
-                    <li key={f} className="flex gap-3 text-[15px] leading-snug text-fg/85">
+                    <li key={f} className={`flex gap-3 text-[15px] leading-snug ${/^FREE /.test(f) ? "font-semibold text-fg" : "text-fg/85"}`}>
                       <span className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${p.popular ? "bg-lime text-ink" : "bg-accent/15 text-accent"}`}>
                         <Icon name="check" className="h-3 w-3" strokeWidth={3} />
                       </span>
